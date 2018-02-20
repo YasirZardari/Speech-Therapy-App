@@ -2,15 +2,27 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
 
 type Props = {};
 class MainMenu extends Component<Props> {
+  onPressRecord = () => {
+    // Go to record screen
+    this.props.navigation.navigate('RecordScreen');
+  }
+
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <Text>Welcome to MainMenu</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={this.onPressRecord}
+        >
+          <Text>Record</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -24,14 +36,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 10
+  }
 });
