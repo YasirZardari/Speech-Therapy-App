@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
-  Dimensions, 
+  Dimensions,
   Platform,
   TouchableOpacity
 } from 'react-native';
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     top:50,
     left: (Dimensions.get('window').width / 2) - 150,
     padding: 10,
-    width: 300, 
+    width: 300,
     height: 80
   },
   button2: {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     left: (Dimensions.get('window').width / 2) - 150,
     backgroundColor: '#007aff',
     padding: 10,
-    width: 300, 
+    width: 300,
     height: 80
   },
   button3: {
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     left: (Dimensions.get('window').width / 2) - 150,
     backgroundColor: '#007aff',
     padding: 10,
-    width: 300, 
+    width: 300,
     height: 80
   },
   button4: {
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     left: (Dimensions.get('window').width / 2) - 150,
     backgroundColor: '#007aff',
     padding: 10,
-    width: 300, 
+    width: 300,
     height: 80
   },
   buttonText: {
