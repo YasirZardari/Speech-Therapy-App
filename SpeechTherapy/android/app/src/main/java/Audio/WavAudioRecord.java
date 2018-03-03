@@ -43,8 +43,9 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
                 CHANNELS, AUDIO_ENCODING) * 3;
         //get a size for the buffer
 
-        filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath();
-        File file = new File(filepath, RECORDER_FOLDER);
+        filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath()
+             + RECORDER_FOLDER;
+        File file = new File(filepath);
         //access the recording folder
 
         if (!file.exists()) {
