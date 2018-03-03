@@ -16,7 +16,6 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.Manifest;
 
@@ -71,7 +70,6 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
         boolean test = status == PackageManager.PERMISSION_GRANTED;
         promise.resolve(test);
     }
-
 
     @ReactMethod
     public void setPath(String path) { output = path; }
