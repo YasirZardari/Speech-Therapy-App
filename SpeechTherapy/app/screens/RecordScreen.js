@@ -18,7 +18,7 @@ class RecordScreen extends Component<Props> {
 
   onPressRecord = () => {
     if (!pathSet) {
-      WavAudioRecord.setPath("/test");
+      WavAudioRecord.setPath("/testaudio.wav");
       ToastAndroid.show('Path Set', ToastAndroid.SHORT);
       pathSet = true;
     }
