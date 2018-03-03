@@ -11,10 +11,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.Manifest;
 
 /**
  * Created by s on 16/02/18.
@@ -57,6 +61,15 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
     @Override
     public String getName() {
         return "WavAudioRecord";
+    }
+
+    @ReactMethod
+    public void checkAuthorisation(Promise promise)
+    {
+        int status = ContextCompat.checkSelfPermission(getCurrentActivity(),
+                Manifest.permission.RECORD_AUDIO);
+        boolean test = status == PackageManager.PERMISSION_GRANTED;
+        promise.resolve(test);
     }
 
 
@@ -182,10 +195,24 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
             recordingThread = null;
             //cleanup recording resources
         }
-
-        copyWaveFile(getTempFilenamePath(), getFilenamePath());
-        deleteTempFile();
         promise.resolve("");
+    }
+
+    @ReactMethod
+    public void saveRecording(Promise promise)
+    {
+        boolean canSave = !(output == null) && !isRecording;
+        //make sure there is a file path you can save under, and that the recorder is currently idle
+
+        if(canSave)
+        {
+            copyWaveFile(getTempFilenamePath(), getFilenamePath());
+            deleteTempFile();
+            output = null;
+        }
+        //save the file
+
+        promise.resolve(canSave);
     }
 
     private void deleteTempFile() {
