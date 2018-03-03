@@ -57,8 +57,7 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
     public String getName() {
         return "WavAudioRecord";
     }
-
-
+    
     @ReactMethod
     public void setPath(String path) { output = path; }
 

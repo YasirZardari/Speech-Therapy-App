@@ -3,21 +3,33 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  NativeModules,
+  ToastAndroid
 } from 'react-native';
+
+const WavAudioRecord = NativeModules.WavAudioRecord;
+
+var isRecording = false;
+var pathSet = false;
 
 type Props = {};
 class RecordScreen extends Component<Props> {
-  WavAudioRecord.setPath("/test");
-  var isRecording = false;
-  
+
   onPressRecord = () => {
-    if (!isRecording) {
-      WavAudioRecord.startRecording();
-    } else {
-      WavAudioRecord.stopRecording();
+    if (!pathSet) {
+      WavAudioRecord.setPath("/test");
+      ToastAndroid.show('Path Set', ToastAndroid.SHORT);
+      pathSet = true;
     }
 
+    if (!isRecording) {
+      WavAudioRecord.startRecording();
+      ToastAndroid.show('Recording Started', ToastAndroid.SHORT);
+    } else {
+      WavAudioRecord.stopRecording();
+      ToastAndroid.show('Recording Stopped', ToastAndroid.SHORT);
+    }
     isRecording = !isRecording;
   }
 
