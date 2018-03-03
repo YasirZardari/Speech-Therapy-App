@@ -68,6 +68,13 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
             file.delete();
         //remove any possible existing file
 
+        try {
+            file.createNewFile();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+
         return (file.getAbsolutePath());
     }
 
@@ -76,6 +83,12 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
         if (tempFile.exists())
             tempFile.delete();
         //remove any possible remnants of previous recordings
+
+        try {
+            tempFile.createNewFile();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
 
         return (tempFile.getAbsolutePath());
     }
@@ -142,6 +155,7 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
             }
 
             try {
+                outputFile.flush();
                 outputFile.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -202,6 +216,7 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
             while (in.read(data) != -1) {
                 out.write(data);
             }
+            out.flush();
 
             in.close();
             out.close();
