@@ -25,7 +25,7 @@ import android.Manifest;
 
 public class WavAudioRecord extends ReactContextBaseJavaModule {
     private static final int BPP = 16;
-    private static final String RECORDER_FOLDER = "AudioRecorder";
+    private static final String RECORDER_FOLDER = "SpeechTherapy";
     private static final String TEMP_FILE_NAME = "temp_recording.raw";
     private static final int SAMPLERATE = 44100;
     private static final int CHANNELS = AudioFormat.CHANNEL_IN_MONO;
@@ -92,14 +92,13 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
 
     private String getTempFilenamePath() {
         File tempFile = new File(filepath, TEMP_FILE_NAME);
-        if (tempFile.exists())
-            tempFile.delete();
-        //remove any possible remnants of previous recordings
 
-        try {
-            tempFile.createNewFile();
-        } catch (IOException e){
-            e.printStackTrace();
+        if(!tempFile.exists()) {
+            try {
+                tempFile.createNewFile();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
         }
 
         return (tempFile.getAbsolutePath());
@@ -211,6 +210,13 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
         //save the file
 
         promise.resolve(canSave);
+    }
+
+    @ReactMethod
+    public void checkForFile(Promise promise)
+    {
+        File file = new File(filepath, output);
+        promise.resolve(file.exists());
     }
 
     private void deleteTempFile() {
