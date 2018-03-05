@@ -14,4 +14,6 @@ export const Root = StackNavigator({
   CategoriesScreen: {
     screen: CategoriesScreen
   }
-}, { headerMode: 'none' }); // headerMode: 'none' gets rid of action bar
+}); // headerMode: 'none' gets rid of action bar
+
+// { headerMode: 'none' }

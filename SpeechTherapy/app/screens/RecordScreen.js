@@ -10,13 +10,26 @@ import {
 
 const WavAudioRecord = NativeModules.WavAudioRecord;
 
-var isRecording = false;
 var pathSet = false;
+var hasPermission = false;
+var isRecording = false;
+
 
 type Props = {};
 class RecordScreen extends Component<Props> {
 
   onPressRecord = () => {
+    if (!hasPermission) {
+      WavAudioRecord.checkAuthorisation()
+      .then(function(result) {
+        if (result) {
+          ToastAndroid.show('Rec Auth True', ToastAndroid.SHORT);
+        } else {
+          ToastAndroid.show('Rec Auth False', ToastAndroid.SHORT);
+        }
+      });
+    }
+
     if (!pathSet) {
       WavAudioRecord.setPath("/testaudio.wav");
       ToastAndroid.show('Path Set', ToastAndroid.SHORT);
@@ -24,11 +37,12 @@ class RecordScreen extends Component<Props> {
     }
 
     if (!isRecording) {
-      WavAudioRecord.startRecording();
-      ToastAndroid.show('Recording Started', ToastAndroid.SHORT);
+      promiseReturn = WavAudioRecord.startRecording();
+      ToastAndroid.show('Rec Started', ToastAndroid.SHORT);
     } else {
       WavAudioRecord.stopRecording();
-      ToastAndroid.show('Recording Stopped', ToastAndroid.SHORT);
+      WavAudioRecord.saveRecording();
+      ToastAndroid.show('Rec Stopped and Saved', ToastAndroid.SHORT);
     }
     isRecording = !isRecording;
   }
