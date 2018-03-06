@@ -17,6 +17,7 @@ class RecordScreen extends Component<Props> {
     super(props);
     this.state = {filename: ''};
 
+    this.filename = '';
     this.hasPermission = false;
     this.isRecording = false;
   }
@@ -36,11 +37,19 @@ class RecordScreen extends Component<Props> {
 
   onPressRecord = () => {
     if (!this.isRecording) {
-      WavAudioRecord.setPath("/testaudio.wav");
       WavAudioRecord.startRecording();
       ToastAndroid.show('Rec Started', ToastAndroid.SHORT);
     } else {
       WavAudioRecord.stopRecording();
+
+      // set filepath
+      this.filename = this.state.filename;
+      if (this.filename === '') {
+        this.filename = 'speechrec';
+      }
+      WavAudioRecord.setPath("/" + this.filename + ".wav");
+
+      // save recording
       WavAudioRecord.saveRecording().then(function(allowedToSave){
         if (allowedToSave) {
             ToastAndroid.show('Rec Stopped and Saved', ToastAndroid.SHORT);
