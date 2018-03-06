@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   NativeModules,
   ToastAndroid
@@ -10,54 +11,67 @@ import {
 
 const WavAudioRecord = NativeModules.WavAudioRecord;
 
-var pathSet = false;
-var hasPermission = false;
-var isRecording = false;
-
-
 type Props = {};
 class RecordScreen extends Component<Props> {
+  constructor(props) {
+    super(props);
+    this.state = {filename: ''};
 
-  onPressRecord = () => {
-    if (!hasPermission) {
-      WavAudioRecord.checkAuthorisation()
-      .then(function(result) {
-        if (result) {
-          ToastAndroid.show('Rec Auth True', ToastAndroid.SHORT);
+    this.hasPermission = false;
+    this.isRecording = false;
+  }
+
+  componentWillMount() {
+    if (!this.hasPermission) {
+      WavAudioRecord.checkAuthorisation().then(function(hasPermission) {
+        if (hasPermission) {
+          ToastAndroid.show('Has Mic Permission', ToastAndroid.SHORT);
         } else {
-          ToastAndroid.show('Rec Auth False', ToastAndroid.SHORT);
+          ToastAndroid.show('No Mic Permission', ToastAndroid.SHORT);
         }
       });
+      this.hasPermission = true;
     }
+  }
 
-    if (!pathSet) {
+  onPressRecord = () => {
+    if (!this.isRecording) {
       WavAudioRecord.setPath("/testaudio.wav");
-      ToastAndroid.show('Path Set', ToastAndroid.SHORT);
-      pathSet = true;
-    }
-
-    if (!isRecording) {
-      promiseReturn = WavAudioRecord.startRecording();
+      WavAudioRecord.startRecording();
       ToastAndroid.show('Rec Started', ToastAndroid.SHORT);
     } else {
       WavAudioRecord.stopRecording();
-      WavAudioRecord.saveRecording();
-      ToastAndroid.show('Rec Stopped and Saved', ToastAndroid.SHORT);
+      WavAudioRecord.saveRecording().then(function(allowedToSave){
+        if (allowedToSave) {
+            ToastAndroid.show('Rec Stopped and Saved', ToastAndroid.SHORT);
+            pathSet = false;
+        } else {
+          ToastAndroid.show('Rec Stopped, Not Saved', ToastAndroid.SHORT);
+        }
+      });
     }
-    isRecording = !isRecording;
+    this.isRecording = !this.isRecording;
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text>Welcome to Record Screen</Text>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={this.onPressRecord}
-        >
-          <Text>Record</Text>
-        </TouchableOpacity>
+        <View style={styles.textInputContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="File name"
+            onChangeText={(filename) => this.setState({filename})}
+          />
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button}
+            onPress={this.onPressRecord}>
+            <Text style={styles.buttonText}>Record</Text>
+          </TouchableOpacity>
+        </View>
+
       </View>
     );
   }
@@ -71,9 +85,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    paddingTop: 10
+  },
   button: {
+    height: 150,
+    width: 320,
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10
+    backgroundColor: '#64B5F6'
+  },
+  buttonText: {
+    fontSize: 36
+  },
+  textInputContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: 10
+  },
+  textInput: {
+    height: 40,
+    width: 320,
+    fontSize: 24
   }
 });

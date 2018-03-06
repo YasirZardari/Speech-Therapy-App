@@ -14,6 +14,6 @@ export const Root = StackNavigator({
   CategoriesScreen: {
     screen: CategoriesScreen
   }
-}); // headerMode: 'none' gets rid of action bar
+});
 
-// { headerMode: 'none' }
+// { headerMode: 'none' } add to stack navigator to remove the action bar
