@@ -1,3 +1,9 @@
+package FileManager;
+
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 
 import android.os.Environment;
 import android.util.Log;
@@ -11,7 +17,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 
-public class FileManager {
+public class FileManager extends ReactContextBaseJavaModule {
 
     private static final String ROOT_DIR = "/MessageBank";
     private final String TAG = "FileManager";
@@ -19,7 +25,8 @@ public class FileManager {
     private final int BUF_SIZE = 1024;
 
     // Constructor
-    public FileManager() {
+    public FileManager(ReactApplicationContext reactContext) {
+        super(reactContext);
 
         File rootDir = new File(getRootDir());
 
@@ -32,10 +39,12 @@ public class FileManager {
 
     }
 
+    @ReactMethod
     public static String getRootDir() {
         return Environment.getExternalStorageDirectory() + ROOT_DIR;
     }
 
+    @ReactMethod
     public void createCategory(String name) throws CategoryAlreadyExistsException{
 
         File newCat = new File(getRootDir() + File.separator + name);
@@ -47,6 +56,7 @@ public class FileManager {
         else  Log.d(TAG, "Unable to create category " + name);
     }
 
+    @ReactMethod
     public void deleteCategory(String categoryName) throws CategoryDoesNotExistException {
 
         File cat = new File(getRootDir() + File.separator + categoryName);
@@ -72,6 +82,7 @@ public class FileManager {
 
     }
 
+    @ReactMethod
     public ArrayList<String> getAllCategories() {
         ArrayList<String> categories = new ArrayList<String>();
         File root = new File(getRootDir());
@@ -86,16 +97,19 @@ public class FileManager {
         return categories;
     }
 
+    @ReactMethod
     public void moveMessageToRootFromCategory(String fromCategory, String messageName)
             throws IOException, CategoryDoesNotExistException {
         moveMessageToCategoryFromCategory(fromCategory, null, messageName);
     }
 
+    @ReactMethod
     public void moveMessageToCategoryFromRoot(String toCategory, String messageName)
             throws  IOException, CategoryDoesNotExistException {
         moveMessageToCategoryFromCategory(null, toCategory, messageName);
     }
 
+    @ReactMethod
     public void moveMessageToCategoryFromCategory(String fromCategory, String toCategory, String messageName)
             throws IOException, CategoryDoesNotExistException {
 
@@ -155,11 +169,13 @@ public class FileManager {
             Log.d(TAG, "Unable to delete file: " + oldFilePath );
     }
 
+    @ReactMethod
     public void renameMessageInRoot(String curMessageName, String newMessageName)
             throws IOException {
         renameMessageInCategory(null, curMessageName, newMessageName);
     }
 
+    @ReactMethod
     public void renameMessageInCategory(String categoryName, String curMessageName, String newMessageName)
             throws IOException {
 
