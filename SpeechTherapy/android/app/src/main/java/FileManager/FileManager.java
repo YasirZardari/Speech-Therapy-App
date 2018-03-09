@@ -44,6 +44,11 @@ public class FileManager extends ReactContextBaseJavaModule {
         return Environment.getExternalStorageDirectory() + ROOT_DIR;
     }
 
+    @Override
+    public String getName(){
+        return "FileManager";
+    }
+
     @ReactMethod
     public void createCategory(String name) throws CategoryAlreadyExistsException{
 
