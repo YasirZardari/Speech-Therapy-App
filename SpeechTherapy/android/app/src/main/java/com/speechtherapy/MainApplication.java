@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import Audio.WavAudioRecordPackage;
+import FileManager.FileManagerPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
