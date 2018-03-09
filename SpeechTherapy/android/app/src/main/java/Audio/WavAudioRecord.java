@@ -205,7 +205,7 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
         }
         //save the file
 
-        promise.resolve(!canSave);
+        promise.resolve(canSave);
     }
 
     @ReactMethod
