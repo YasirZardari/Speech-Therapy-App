@@ -3,6 +3,7 @@ import { StackNavigator } from 'react-navigation';
 import MainMenu from '../screens/MainMenu';
 import RecordScreen from '../screens/RecordScreen';
 import CategoriesScreen from '../screens/CategoriesScreen';
+import SaveRecordingScreen from '../screens/SaveRecordingScreen';
 
 export const Root = StackNavigator({
   MainMenu: {
@@ -13,6 +14,9 @@ export const Root = StackNavigator({
   },
   CategoriesScreen: {
     screen: CategoriesScreen
+  },
+  SaveRecordingScreen: {
+    screen: SaveRecordingScreen
   }
 });
 

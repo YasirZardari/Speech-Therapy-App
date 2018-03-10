@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   NativeModules,
   ToastAndroid
@@ -15,13 +14,17 @@ type Props = {};
 class RecordScreen extends Component<Props> {
   constructor(props) {
     super(props);
-    this.state = {filename: ''};
 
+    this.state = {
+      filename: ''
+    }
     this.filename = '';
+
     this.hasPermission = false;
     this.isRecording = false;
   }
 
+  // Check if user has mic permission before rendering components
   componentWillMount() {
     if (!this.hasPermission) {
       WavAudioRecord.checkAuthorisation().then(function(hasPermission) {
@@ -37,29 +40,30 @@ class RecordScreen extends Component<Props> {
 
   onPressRecord = () => {
     if (!this.isRecording) {
+      // start recording
       WavAudioRecord.startRecording();
+      this.isRecording = true;
       ToastAndroid.show('Rec Started', ToastAndroid.SHORT);
     } else {
+      // stop recording
       WavAudioRecord.stopRecording();
+      this.isRecording = false;
 
-      // set filepath
-      this.filename = this.state.filename;
-      if (this.filename === '') {
-        this.filename = 'speechrec';
-      }
-      WavAudioRecord.setPath("/" + this.filename + ".wav");
-
-      // save recording
-      WavAudioRecord.saveRecording().then(function(allowedToSave){
-        if (allowedToSave) {
-            ToastAndroid.show('Rec Stopped and Saved', ToastAndroid.SHORT);
-            pathSet = false;
-        } else {
-          ToastAndroid.show('Rec Stopped, Not Saved', ToastAndroid.SHORT);
-        }
+      WavAudioRecord.setPath("/" + "myfilename" + ".wav");
+      WavAudioRecord.saveRecording()
+      .then(function(success){
+        // on promise resolve
+        ToastAndroid.show('Rec Saved', ToastAndroid.SHORT);
+        this.props.navigation.navigate('MainMenu');
+      },function(fail){
+        // on promise reject
+      })
+      .catch(function(){
+        ToastAndroid.show('Error Saving', ToastAndroid.SHORT);
       });
+
+      //this.props.navigation.navigate('SaveRecordingScreen');
     }
-    this.isRecording = !this.isRecording;
   }
 
   render() {
