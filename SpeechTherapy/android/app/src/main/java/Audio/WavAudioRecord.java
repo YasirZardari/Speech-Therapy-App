@@ -209,7 +209,7 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
         }
         //save the file
 
-        promise.resolve(!isRecording);
+        promise.resolve(canSave);
     }
 
     @ReactMethod

@@ -15,16 +15,12 @@ class RecordScreen extends Component<Props> {
   constructor(props) {
     super(props);
 
-    this.state = {
-      filename: ''
-    }
-    this.filename = '';
-
     this.hasPermission = false;
     this.isRecording = false;
   }
 
-  // Check if user has mic permission before rendering components
+  // Check if user has mic permission before rendering components.
+  // TODO: implement manual permission request, incase permission check fails.
   componentWillMount() {
     if (!this.hasPermission) {
       WavAudioRecord.checkAuthorisation().then(function(hasPermission) {
@@ -49,34 +45,13 @@ class RecordScreen extends Component<Props> {
       WavAudioRecord.stopRecording();
       this.isRecording = false;
 
-      WavAudioRecord.setPath("/" + "myfilename" + ".wav");
-      WavAudioRecord.saveRecording()
-      .then(function(success){
-        // on promise resolve
-        ToastAndroid.show('Rec Saved', ToastAndroid.SHORT);
-        this.props.navigation.navigate('MainMenu');
-      },function(fail){
-        // on promise reject
-      })
-      .catch(function(){
-        ToastAndroid.show('Error Saving', ToastAndroid.SHORT);
-      });
-
-      //this.props.navigation.navigate('SaveRecordingScreen');
+      this.props.navigation.navigate('SaveRecordingScreen');
     }
   }
 
   render() {
     return (
       <View style={styles.container}>
-
-        <View style={styles.textInputContainer}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="File name"
-            onChangeText={(filename) => this.setState({filename})}
-          />
-        </View>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button}
@@ -112,15 +87,5 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 36
-  },
-  textInputContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: 10
-  },
-  textInput: {
-    height: 40,
-    width: 320,
-    fontSize: 24
   }
 });

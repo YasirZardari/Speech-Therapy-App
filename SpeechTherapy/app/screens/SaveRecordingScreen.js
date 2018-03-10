@@ -31,17 +31,24 @@ class SaveRecordingScreen extends Component<Props> {
     }
 
     WavAudioRecord.setPath("/" + this.filename + ".wav");
+
+    // If promise is not resolved, recoring still will save.
+    // If for some reason the saving process fails,
+    // user will be redirected to main menu and file will be lost. (For now).
     WavAudioRecord.saveRecording()
-    .then(function(success){
+    .then(function(resolvedVal){
       // on promise resolve
       ToastAndroid.show('Rec Saved', ToastAndroid.SHORT);
-      this.props.navigation.navigate('MainMenu');
-    },function(fail){
+    },function(rejectVal){
       // on promise reject
+      ToastAndroid.show('Rec NOT Saved', ToastAndroid.SHORT);
     })
-    .catch(function(){
-      ToastAndroid.show('Error Saving', ToastAndroid.SHORT);
+    .catch(function(err){
+      ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
     });
+
+    // take user to main menu after executing 'save' function
+    this.props.navigation.navigate('MainMenu');
   }
 
   render() {
