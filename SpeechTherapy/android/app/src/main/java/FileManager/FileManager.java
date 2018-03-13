@@ -39,34 +39,37 @@ public class FileManager extends ReactContextBaseJavaModule {
 
     }
 
-    @ReactMethod
-    public static String getRootDir() {
-        return Environment.getExternalStorageDirectory() + ROOT_DIR;
-    }
-
     @Override
     public String getName(){
         return "FileManager";
     }
 
+
     @ReactMethod
-    public void createCategory(String name) throws CategoryAlreadyExistsException{
+    public static String getRootDir() {
+        return Environment.getExternalStorageDirectory() + ROOT_DIR;
+    }
+
+    @ReactMethod
+    public void createCategory(String name, Promise promise) {
 
         File newCat = new File(getRootDir() + File.separator + name);
 
         if (newCat.exists())
-            throw new CategoryAlreadyExistsException(ROOT_DIR + File.separator + name);
+            promise.reject("CategoryAlreadyExistsException" + ROOT_DIR + File.separator + name);
 
         if (newCat.mkdirs()) Log.d(TAG, "New Category: " + name);
         else  Log.d(TAG, "Unable to create category " + name);
+
+        promise.resolve("");
     }
 
     @ReactMethod
-    public void deleteCategory(String categoryName) throws CategoryDoesNotExistException {
+    public void deleteCategory(String categoryName, Promise promise) {
 
         File cat = new File(getRootDir() + File.separator + categoryName);
         if (!cat.exists())
-            throw new CategoryDoesNotExistException("Category doesn't exist:" + categoryName);
+           promise.reject("Category doesn't exist:" + categoryName);
 
         File[] messagesInCategory = cat.listFiles();
         for (File message : messagesInCategory) {
@@ -85,7 +88,26 @@ public class FileManager extends ReactContextBaseJavaModule {
         if (!cat.delete())
             Log.e(TAG, "Unable to delete category folder");
 
+        promise.resolve("")
     }
+
+
+    @ReactMethod
+    public ArrayList<String> getMessagesInCategory(String categoryName) 
+             {
+
+
+    }
+
+    @ReactMethod
+    public ArrayList<String> getAllMessages() {
+
+
+
+
+
+    }
+
 
     @ReactMethod
     public ArrayList<String> getAllCategories() {
@@ -103,20 +125,18 @@ public class FileManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void moveMessageToRootFromCategory(String fromCategory, String messageName)
-            throws IOException, CategoryDoesNotExistException {
-        moveMessageToCategoryFromCategory(fromCategory, null, messageName);
+    public void moveMessageToRootFromCategory(String fromCategory, String messageName, Promise promise) {
+        moveMessageToCategoryFromCategory(fromCategory, null, messageName, promise);
     }
 
     @ReactMethod
-    public void moveMessageToCategoryFromRoot(String toCategory, String messageName)
-            throws  IOException, CategoryDoesNotExistException {
-        moveMessageToCategoryFromCategory(null, toCategory, messageName);
+    public void moveMessageToCategoryFromRoot(String toCategory, String messageName, Promise promise) {
+        moveMessageToCategoryFromCategory(null, toCategory, messageName, promise);
     }
 
     @ReactMethod
-    public void moveMessageToCategoryFromCategory(String fromCategory, String toCategory, String messageName)
-            throws IOException, CategoryDoesNotExistException {
+    public void moveMessageToCategoryFromCategory(String fromCategory, String toCategory, 
+            String messageName, Promise promise) {
 
         String newFilePath;
         String oldFilePath;
@@ -129,7 +149,7 @@ public class FileManager extends ReactContextBaseJavaModule {
             newFilePath = getRootDir() + File.separator + toCategory + File.separator + messageName;
             if (!new File(getRootDir() + File.separator + toCategory).exists())
                 // If category to transfer message to exists...
-                throw new CategoryDoesNotExistException("Cannot move message to category that doesn't exist");
+                promise.reject("Cannot move message to category that doesn't exist");
         }
 
         if (fromCategory == null) {
@@ -139,12 +159,12 @@ public class FileManager extends ReactContextBaseJavaModule {
             oldFilePath = getRootDir() + File.separator + fromCategory + File.separator + messageName;
             if (!new File(getRootDir() + File.separator + fromCategory).exists())
                 // If category to transfer message to exists...
-                throw new CategoryDoesNotExistException("Cannot move message from category that doesn't exist");
+                promise.reject("Cannot move message from category that doesn't exist");
         }
 
         // Checking to see if message actually exists
         if (!new File(oldFilePath).exists()) {
-            throw new IOException("Message to move doesn't exist" + oldFilePath);
+            promise.reject("Message to move doesn't exist" + oldFilePath);
         }
 
         // If there already is a file @ new file path
@@ -172,17 +192,18 @@ public class FileManager extends ReactContextBaseJavaModule {
         // delete the original file
         if (!new File(oldFilePath).delete())
             Log.d(TAG, "Unable to delete file: " + oldFilePath );
+
+        promise.resolve("")
     }
 
     @ReactMethod
-    public void renameMessageInRoot(String curMessageName, String newMessageName)
-            throws IOException {
-        renameMessageInCategory(null, curMessageName, newMessageName);
+    public void renameMessageInRoot(String curMessageName, String newMessageName, Promise promise) {
+        renameMessageInCategory(null, curMessageName, newMessageName, promise);
     }
 
     @ReactMethod
-    public void renameMessageInCategory(String categoryName, String curMessageName, String newMessageName)
-            throws IOException {
+    public void renameMessageInCategory(String categoryName, String curMessageName,
+            String newMessageName, Promise promise) {
 
         String curPath;
         String newPath;
@@ -198,30 +219,17 @@ public class FileManager extends ReactContextBaseJavaModule {
 
         File message = new File(curPath);
         if (!message.exists())
-            throw new IOException("File does not exist at: " + curPath);
+            promise.reject("File does not exist at: " + curPath);
 
         File newMessage = new File(newPath);
         if (newMessage.exists())
-            throw new IOException("File already has this name: " + newPath);
+            promise.reject("File already has this name: " + newPath);
 
         if (!message.renameTo(newMessage))
             Log.e(TAG, "Unable to rename file");
 
+        promise.resolve("")
     }
 
-
-    class CategoryAlreadyExistsException extends Exception {
-        public CategoryAlreadyExistsException () {}
-        public CategoryAlreadyExistsException (String message) {
-            super(message);
-        }
-    }
-
-    class CategoryDoesNotExistException extends Exception {
-        public CategoryDoesNotExistException () {}
-        public CategoryDoesNotExistException (String message) {
-            super(message);
-        }
-    }
 
 }
