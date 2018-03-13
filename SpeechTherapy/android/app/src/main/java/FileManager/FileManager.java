@@ -92,21 +92,6 @@ public class FileManager extends ReactContextBaseJavaModule {
     }
 
 
-    @ReactMethod
-    public ArrayList<String> getMessagesInCategory(String categoryName) 
-             {
-
-
-    }
-
-    @ReactMethod
-    public ArrayList<String> getAllMessages() {
-
-
-
-
-
-    }
 
 
     @ReactMethod
