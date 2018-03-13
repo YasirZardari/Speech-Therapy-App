@@ -88,7 +88,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         if (!cat.delete())
             Log.e(TAG, "Unable to delete category folder");
 
-        promise.resolve("")
+        promise.resolve("");
     }
 
 
@@ -178,7 +178,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         if (!new File(oldFilePath).delete())
             Log.d(TAG, "Unable to delete file: " + oldFilePath );
 
-        promise.resolve("")
+        promise.resolve("");
     }
 
     @ReactMethod
@@ -213,7 +213,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         if (!message.renameTo(newMessage))
             Log.e(TAG, "Unable to rename file");
 
-        promise.resolve("")
+        promise.resolve("");
     }
 
 
