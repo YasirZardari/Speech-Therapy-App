@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactMethod;
 import android.os.Environment;
 import android.util.Log;
 
+import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -74,13 +75,10 @@ public class FileManager extends ReactContextBaseJavaModule {
         File[] messagesInCategory = cat.listFiles();
         for (File message : messagesInCategory) {
             if (message.getName().endsWith(FILE_TYPE)) {
-                try {
-                    // Move the message from within the category to the root folder
-                    moveMessageToRootFromCategory(categoryName, message.getName());
-                } catch (IOException e) {
-                    Log.e(TAG,
-                            "Unable to move file during delete of:" + categoryName);
-                }
+                
+                // Move the message from within the category to the root folder
+                moveMessageToRootFromCategory(categoryName, message.getName(), promise);
+
             }
         }
 
@@ -158,21 +156,29 @@ public class FileManager extends ReactContextBaseJavaModule {
             newFilePath = newFilePath.replace(FILE_TYPE, "-copy" + FILE_TYPE);
         }
 
-        InputStream in = new FileInputStream(oldFilePath);
-        OutputStream out = new FileOutputStream(newFilePath);
+        InputStream in;
+        OutputStream out;
+        try {
+            in = new FileInputStream(oldFilePath);
+            out = new FileOutputStream(newFilePath);
 
-        byte[] buffer = new byte[BUF_SIZE];
-        int read;
+            byte[] buffer = new byte[BUF_SIZE];
+            int read;
 
-        while ((read = in.read(buffer)) != -1) {
-            out.write(buffer, 0, read);
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+
+            in.close();
+
+            // write the output file
+            out.flush();
+            out.close();
+        } catch (FileNotFoundException e) {
+            promise.reject("FileNotFoundException");
+        } catch (IOException e) {
+            promise.reject("IOException");
         }
-
-        in.close();
-
-        // write the output file
-        out.flush();
-        out.close();
 
         // delete the original file
         if (!new File(oldFilePath).delete())
