@@ -101,7 +101,7 @@ public class FileManager extends ReactContextBaseJavaModule {
 
         for (File file : category) {
             if (file.getName().endsWith(FILE_TYPE)) {
-                filePaths.add(file..getAbsolutePath());
+                filePaths.add(file.getAbsolutePath());
             }
         }
 
