@@ -90,6 +90,25 @@ public class FileManager extends ReactContextBaseJavaModule {
     }
 
 
+    @ReactMethod
+    public ArrayList<String> getAllMessageFilePathFromCategory(String category, Promise promise) {
+        ArrayList<String> filePaths = new ArrayList<String>();
+
+        File cat = new File(getRootDir() + "/" + category);
+        if (!cat.exists()) {
+            promise.reject("Category doesn't exist");
+            return null;
+        }
+
+        File[] categoryFiles = cat.listFiles();
+        for (File file : categoryFiles) {
+            if (file.getName().endsWith(FILE_TYPE)) {
+                filePaths.add(file.getAbsolutePath());
+            }
+        }
+
+        return filePaths;
+    }
 
 
     @ReactMethod
@@ -98,7 +117,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         File root = new File(getRootDir());
 
         File[] filesInRoot = root.listFiles();
-        for (File file :  filesInRoot) {
+        for (File file : filesInRoot) {
             if (file.isDirectory()) {
                 categories.add(file.getName());
             }

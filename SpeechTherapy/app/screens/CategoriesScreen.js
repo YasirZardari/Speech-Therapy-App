@@ -1,128 +1,100 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
-  Dimensions,
-  Platform,
-  TouchableOpacity
-} from 'react-native';
+    StyleSheet,
+    Alert,
+    Text,
+    View,
+    FlatList,
+    Dimensions,
+    TextInput,
+    Button,
+    TouchableOpacity,
+    TouchableHighlight
+} from 'react-native'
+
+var CategoryArray = ["MainMenu",
+"Category2",
+"Category3",
+"Category4",
+"Category5"];
 
 type Props = {};
 class CategoriesScreen extends Component<Props> {
 
-  render() {
-    return (
-      <View style={styles.container}>
-      <Text style={styles.headingText}>Categories</Text>
-      <TouchableOpacity
-      style={styles.button}
-      onPress={this.onPressCategory}
-      >
-      <Text style={styles.buttonText}>Category1</Text>
-      </TouchableOpacity>
+  constructor(props) {
 
-      <TouchableOpacity
-      style={styles.button2}
-      onPress={this.onPressCategory}
-      >
-      <Text style={styles.buttonText}>Category2</Text>
-      </TouchableOpacity>
+         super(props)
+         this.state = {temp: ''}
 
-      <TouchableOpacity
-      style={styles.button3}
-      onPress={this.onPressCategory}
-      >
-      <Text style={styles.buttonText}>Category3</Text>
-      </TouchableOpacity>
+       }
 
-      <TouchableOpacity
-      style={styles.button4}
-      onPress={this.onPressCategory}
-      >
-      <Text style={styles.buttonText}>Category4</Text>
-      </TouchableOpacity>
+       AddItemsToArray=()=>{
 
-      <TouchableOpacity
-      style={styles.button5}
-      onPress={this.onPressCategory}
-      >
-      <Text style={styles.buttonText}>Category5</Text>
-      </TouchableOpacity>
+      //Adding Items To Array.
+      CategoryArray.push( this.state.temp.toString() );
 
-      </View>
-    );
+      Alert.alert(CategoryArray.toString());
+  }
+
+  //_keyExtractor = (item, index) => item.id;
+
+  onPressCategory(destination) {
+    this.props.navigation.navigate(destination);
+  }
+     render() {
+       return (
+        <View style={styles.container}>
+        <TextInput
+
+            placeholder="Click Here To Name A New Category"
+
+            onChangeText={TextInputValue => this.setState({ temp : TextInputValue }) }
+
+            style={styles.enterText}
+
+        />
+        <Button title="Click Here To Confirm This New Category" onPress={this.AddItemsToArray} />
+          <FlatList
+            //keyExtractor={this._keyExtractor}
+            data={CategoryArray}
+          //extraData={this.state}
+            //id={item.id}
+            renderItem={({item}) => {
+                return(
+                  <TouchableHighlight
+                    onPress={() => this.onPressCategory(item)}>
+                    <Text style={styles.categoryText}>{item}</Text>
+                  </TouchableHighlight>
+                )
+              }
+            }
+          />
+        </View>
+
+      );
   }
 }
 export default CategoriesScreen;
 
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+   flex: 1,
+   justifyContent: 'center',
+   alignItems: 'center',
+   backgroundColor: '#007aff'
   },
-  button: {
-    //alignItems: 'center',
-    backgroundColor: '#336699',
-    position: 'absolute',
-    top:100,
-    left: (Dimensions.get('window').width / 2) - 150,
-    padding: 10,
-    width: 300,
-    height: 80
+  enterText: {
+    textAlign: 'center',
+    marginBottom: 6,
+    height: 45,
+    width:350
   },
-  button2: {
-    //alignItems: 'center',
-    position: 'absolute',
-    top:200,
-    left: (Dimensions.get('window').width / 2) - 150,
-    backgroundColor: '#336699',
-    padding: 10,
-    width: 300,
-    height: 80
-  },
-  button3: {
-    position: 'absolute',
-    top:300,
-    left: (Dimensions.get('window').width / 2) - 150,
-    backgroundColor: '#336699',
-    padding: 10,
-    width: 300,
-    height: 80
-  },
-  button4: {
-    position: 'absolute',
-    top:400,
-    left: (Dimensions.get('window').width / 2) - 150,
-    backgroundColor: '#336699',
-    padding: 10,
-    width: 300,
-    height: 80
-  },
-  button5: {
-    position: 'absolute',
-    top:500,
-    left: (Dimensions.get('window').width / 2) - 150,
-    backgroundColor: '#336699',
-    padding: 10,
-    width: 300,
-    height: 80
-  },
-  buttonText: {
+  categoryText: {
     padding: 20,
     fontSize: 25,
     textAlign: 'center',
     justifyContent: 'center',
     color: 'white'
-  },
-  headingText: {
-    position: 'absolute',
-    fontSize: 25,
-    top: 30,
-    textAlign: 'center',
-    justifyContent: 'center',
-    color: 'grey'
   }
-});
+})
