@@ -5,6 +5,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import FileManager.FileManager;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,7 +23,6 @@ import android.Manifest;
 
 public class WavAudioRecord extends ReactContextBaseJavaModule {
     private static final int BPP = 16;
-    private static final String RECORDER_FOLDER = "SpeechTherapy";
     private static final String TEMP_FILE_NAME = "temp_recording.raw";
     private static final int SAMPLERATE = 44100;
     private static final int CHANNELS = AudioFormat.CHANNEL_IN_MONO;
@@ -42,8 +43,7 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
                 CHANNELS, AUDIO_ENCODING) * 3;
         //get a size for the buffer
 
-        filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath()
-             + "/" +RECORDER_FOLDER;
+        filepath = FileManager.getRootDir();
         File file = new File(filepath);
         //access the recording folder
 
