@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   NativeModules,
   ToastAndroid
@@ -14,13 +15,13 @@ type Props = {};
 class RecordScreen extends Component<Props> {
   constructor(props) {
     super(props);
+    this.state = {filename: ''};
 
+    this.filename = '';
     this.hasPermission = false;
     this.isRecording = false;
   }
 
-  // Check if user has mic permission before rendering components.
-  // TODO: implement manual permission request, incase permission check fails.
   componentWillMount() {
     if (!this.hasPermission) {
       WavAudioRecord.checkAuthorisation().then(function(hasPermission) {
@@ -36,22 +37,42 @@ class RecordScreen extends Component<Props> {
 
   onPressRecord = () => {
     if (!this.isRecording) {
-      // start recording
       WavAudioRecord.startRecording();
-      this.isRecording = true;
       ToastAndroid.show('Rec Started', ToastAndroid.SHORT);
     } else {
-      // stop recording
       WavAudioRecord.stopRecording();
-      this.isRecording = false;
 
-      this.props.navigation.navigate('SaveRecordingScreen');
+      // set filepath
+      this.filename = this.state.filename;
+      if (this.filename === '') {
+        this.filename = 'speechrec';
+      }
+      WavAudioRecord.setPath("/" + this.filename + ".wav");
+
+      // save recording
+      WavAudioRecord.saveRecording().then(function(allowedToSave){
+        if (allowedToSave) {
+            ToastAndroid.show('Rec Stopped and Saved', ToastAndroid.SHORT);
+            pathSet = false;
+        } else {
+          ToastAndroid.show('Rec Stopped, Not Saved', ToastAndroid.SHORT);
+        }
+      });
     }
+    this.isRecording = !this.isRecording;
   }
 
   render() {
     return (
       <View style={styles.container}>
+
+        <View style={styles.textInputContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="File name"
+            onChangeText={(filename) => this.setState({filename})}
+          />
+        </View>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button}
@@ -87,5 +108,15 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 36
+  },
+  textInputContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: 10
+  },
+  textInput: {
+    height: 40,
+    width: 320,
+    fontSize: 24
   }
 });
