@@ -114,7 +114,7 @@ public class FileManager extends ReactContextBaseJavaModule {
 
 
     @ReactMethod
-    public ArrayList<String> getAllCategories() {
+    public String[] getAllCategories() {
         ArrayList<String> categories = new ArrayList<String>();
         File root = new File(getRootDir());
 
