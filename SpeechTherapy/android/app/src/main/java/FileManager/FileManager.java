@@ -127,7 +127,7 @@ public class FileManager extends ReactContextBaseJavaModule {
 
         String[] categoriesArray = new String[categories.size()];
         categoriesArray = categories.toArray(categoriesArray);
-        return categories;
+        return categoriesArray;
     }
 
     @ReactMethod
