@@ -12,8 +12,7 @@ import {
     TouchableHighlight,
     ToastAndroid
 } from 'react-native';
-import { List, ListItem, SearchBar} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/EvilIcons';
+import { List, ListItem} from 'react-native-elements';
 
 var RecordingArray = ["Recording",
 "Recording",
