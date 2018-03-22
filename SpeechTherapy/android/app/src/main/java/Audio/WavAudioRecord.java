@@ -19,9 +19,10 @@ import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.Manifest;
 
+import FileManager.FileManager;
+
 public class WavAudioRecord extends ReactContextBaseJavaModule {
     private static final int BPP = 16;
-    private static final String RECORDER_FOLDER = "SpeechTherapy";
     private static final String TEMP_FILE_NAME = "temp_recording.raw";
     private static final int SAMPLERATE = 44100;
     private static final int CHANNELS = AudioFormat.CHANNEL_IN_MONO;
@@ -42,8 +43,7 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
                 CHANNELS, AUDIO_ENCODING) * 3;
         //get a size for the buffer
 
-        filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath()
-             + "/" +RECORDER_FOLDER;
+        filepath = FileManager.getRootDir();
         File file = new File(filepath);
         //access the recording folder
 
