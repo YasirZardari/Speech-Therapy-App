@@ -17,6 +17,9 @@ class MainMenu extends Component<Props> {
   onPressCategories = () => {
     this.props.navigation.navigate('CategoriesScreen');
   }
+  onPressTTS = () => {
+    this.props.navigation.navigate('TTSScreen');
+  }
 
   render() {
     return (

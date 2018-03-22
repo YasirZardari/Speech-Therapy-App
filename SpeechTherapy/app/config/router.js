@@ -5,6 +5,7 @@ import RecordScreen from '../screens/RecordScreen';
 import CategoriesScreen from '../screens/CategoriesScreen';
 import CategoryScreen from '../screens/CategoryScreen';
 import SaveRecordingScreen from '../screens/SaveRecordingScreen';
+import TTSScreen from '../screens/TTSScreen';
 
 export const Root = StackNavigator({
   MainMenu: {
