@@ -28,6 +28,7 @@ class SaveRecordingScreen extends Component<Props> {
     // set filepath, if field empty - give default name "speechrec"
     if (this.state.filename === '') {
       this.setState({ filename:'speechrec' });
+      ToastAndroid.show("Filename: " + this.state.filename, ToastAndroid.SHORT);
     }
 
     WavAudioRecord.setPath("/" + this.state.filename + ".wav");
