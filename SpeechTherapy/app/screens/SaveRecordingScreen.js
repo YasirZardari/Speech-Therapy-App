@@ -19,7 +19,7 @@ class SaveRecordingScreen extends Component<Props> {
     super(props);
 
     this.state = {
-      filename: '',
+      filename: 'speechrec',
       category: ''
     }
   }
