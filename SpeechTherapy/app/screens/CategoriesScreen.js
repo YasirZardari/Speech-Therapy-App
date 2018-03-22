@@ -57,6 +57,7 @@ class CategoriesScreen extends Component<Props> {
         CategoryArray.splice(i, 1);
       }
     }
+    this.setState({CategoryArray});
   }
   deleteCategory=(stringToDelete)=>{
     Alert.alert(
