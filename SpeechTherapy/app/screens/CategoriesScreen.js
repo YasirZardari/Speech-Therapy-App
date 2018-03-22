@@ -12,8 +12,8 @@ import {
     TouchableHighlight,
     ToastAndroid
 } from 'react-native';
-import {List, ListItem} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/EvilIcons'; 
+import {List, ListItem} from 'react-native-elements'; //npm install react-native-elements
+import Icon from 'react-native-vector-icons/EvilIcons'; // npm install react-native-vector-icons
 import CategoryScreen from '../screens/CategoryScreen';
 
 var CategoryArray = ["Greetings",
