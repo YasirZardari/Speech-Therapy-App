@@ -6,6 +6,7 @@ import CategoriesScreen from '../screens/CategoriesScreen';
 import CategoryScreen from '../screens/CategoryScreen';
 import FavouritesScreen from '../screens/FavouritesScreen';
 import SaveRecordingScreen from '../screens/SaveRecordingScreen';
+import TTSScreen from '../screens/TTSScreen';
 
 export const Root = StackNavigator({
   MainMenu: {
@@ -25,6 +26,9 @@ export const Root = StackNavigator({
   },
   SaveRecordingScreen: {
    screen: SaveRecordingScreen
+  },
+  TTSScreen: {
+    screen: TTSScreen
   }
 });
 
