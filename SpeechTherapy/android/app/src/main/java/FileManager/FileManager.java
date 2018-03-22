@@ -45,7 +45,6 @@ public class FileManager extends ReactContextBaseJavaModule {
         return "FileManager";
     }
 
-
     @ReactMethod
     public static String getRootDir() {
         return Environment.getExternalStorageDirectory() + ROOT_DIR;
@@ -75,7 +74,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         File[] messagesInCategory = cat.listFiles();
         for (File message : messagesInCategory) {
             if (message.getName().endsWith(FILE_TYPE)) {
-                
+
                 // Move the message from within the category to the root folder
                 moveMessageToRootFromCategory(categoryName, message.getName(), promise);
 
@@ -137,7 +136,7 @@ public class FileManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void moveMessageToCategoryFromCategory(String fromCategory, String toCategory, 
+    public void moveMessageToCategoryFromCategory(String fromCategory, String toCategory,
             String messageName, Promise promise) {
 
         String newFilePath;

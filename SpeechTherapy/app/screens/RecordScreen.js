@@ -15,14 +15,17 @@ class RecordScreen extends Component<Props> {
   constructor(props) {
     super(props);
 
-    this.hasPermission = false;
-    this.isRecording = false;
+    this.state = {
+      hasPermission: false,
+      isRecording: false,
+      buttonText: 'Start Recording'
+    }
   }
 
   // Check if user has mic permission before rendering components.
   // TODO: implement manual permission request, incase permission check fails.
   componentWillMount() {
-    if (!this.hasPermission) {
+    if (!this.state.hasPermission) {
       WavAudioRecord.checkAuthorisation().then(function(hasPermission) {
         if (hasPermission) {
           ToastAndroid.show('Has Mic Permission', ToastAndroid.SHORT);
@@ -30,20 +33,20 @@ class RecordScreen extends Component<Props> {
           ToastAndroid.show('No Mic Permission', ToastAndroid.SHORT);
         }
       });
-      this.hasPermission = true;
+      this.setState({ hasPermission: true });
     }
   }
 
   onPressRecord = () => {
-    if (!this.isRecording) {
+    if (!this.state.isRecording) {
       // start recording
       WavAudioRecord.startRecording();
-      this.isRecording = true;
+      this.setState({ isRecording: true, buttonText: 'Stop Recording'});
       ToastAndroid.show('Rec Started', ToastAndroid.SHORT);
     } else {
       // stop recording
       WavAudioRecord.stopRecording();
-      this.isRecording = false;
+      this.setState({ isRecording: false, buttonText: 'Start Recording' });
 
       this.props.navigation.navigate('SaveRecordingScreen');
     }
@@ -54,9 +57,9 @@ class RecordScreen extends Component<Props> {
       <View style={styles.container}>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}
+          <TouchableOpacity style={[styles.button, this.state.isRecording && styles.buttonOnRec]}
             onPress={this.onPressRecord}>
-            <Text style={styles.buttonText}>Record</Text>
+            <Text style={styles.buttonText}>{ this.state.buttonText }</Text>
           </TouchableOpacity>
         </View>
 
@@ -84,6 +87,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#64B5F6'
+  },
+  buttonOnRec: {
+    backgroundColor: 'red'
   },
   buttonText: {
     fontSize: 36

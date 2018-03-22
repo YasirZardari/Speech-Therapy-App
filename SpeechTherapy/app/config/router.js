@@ -16,7 +16,13 @@ export const Root = StackNavigator({
     screen: CategoriesScreen
   },
   SaveRecordingScreen: {
-    screen: SaveRecordingScreen
+    screen: SaveRecordingScreen,
+    navigationOptions: {
+      title: 'Save Recording',
+      headerStyle: { backgroundColor: '#03A9F4' },
+      headerTitleStyle: { color: '#FFFFFF' },
+      headerTintColor: '#FFFFFF',
+    }
   }
 });
 
