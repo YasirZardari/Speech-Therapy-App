@@ -16,13 +16,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class FileManager extends ReactContextBaseJavaModule {
 
     private static final String ROOT_DIR = "/MessageBank";
     private final String TAG = "FileManager";
-    private final String FILE_TYPE = ".wav";
+    private final String FILE_TYPE_AUDIO = ".wav";
+    private final String FILE_TYPE_TEXT = ".txt";
     private final int BUF_SIZE = 1024;
 
     // Constructor
@@ -74,7 +76,7 @@ public class FileManager extends ReactContextBaseJavaModule {
 
         File[] messagesInCategory = cat.listFiles();
         for (File message : messagesInCategory) {
-            if (message.getName().endsWith(FILE_TYPE)) {
+            if (message.getName().endsWith(FILE_TYPE_AUDIO) || message.getName().endsWith(FILE_TYPE_TEXT)) {
                 
                 // Move the message from within the category to the root folder
                 moveMessageToRootFromCategory(categoryName, message.getName(), promise);
@@ -89,45 +91,105 @@ public class FileManager extends ReactContextBaseJavaModule {
         promise.resolve("");
     }
 
+    @ReactMethod
+    public void createTextFile(String fileName, String content, Promise promise)
+    {
+        try
+        {
+            File file = new File(getRootDir() + File.separator + fileName);
+            if(file.exists()) file.delete();
+    
+            file.createNewFile();
+            FileOutputStream os = new FileOutputStream(file);
+    
+            os.write(content.getBytes());
+            os.flush();
+            os.close();
+        }
+        catch(IOException e)
+        {
+            promise.reject("Error: Could not access file!");
+        }
+    }
 
     @ReactMethod
-    public String[] getAllMessageFilePathFromCategory(String category, Promise promise) {
-        ArrayList<String> filePaths = new ArrayList<String>();
-
-        File cat = new File(getRootDir() + "/" + category);
-        if (!cat.exists()) {
-            promise.reject("Category doesn't exist");
-            return null;
+    public void deleteFile(String filename, Promise promise)
+    {
+        File file = new File(getRootDir() + File.separator + filename);
+        if(!file.exists()) promise.resolve("File does not exist!");
+        else
+        {
+            file.delete();
+            promise.resolve("Success!");
         }
+    }
 
-        File[] categoryFiles = cat.listFiles();
-        for (File file : categoryFiles) {
-            if (file.getName().endsWith(FILE_TYPE)) {
-                filePaths.add(file.getAbsolutePath());
+    @ReactMethod
+    public void getTextFileContent(String category, String filename, Promise promise)
+    {
+        File file = new File(getRootDir() + File.separator + category + File.separator + filename);
+        if(!file.exists()) promise.reject("Error: no such file");
+        else
+        {
+            try
+            {
+                Scanner in = new Scanner(file);
+                promise.resolve(in.nextLine());
+            }
+            catch(FileNotFoundException e)
+            {
+                promise.reject("Error: could not find file!");
             }
         }
-
-        String[] filePathsArray = new String[filePaths.size()];
-        filePathsArray = filePaths.toArray(filePathsArray);
-        return filePathsArray;
     }
 
 
     @ReactMethod
-    public String[] getAllCategories() {
-        ArrayList<String> categories = new ArrayList<String>();
+    public void getAllMessageFilePathFromCategory(String category, Promise promise) {
+
+        StringBuilder jsonString = new StringBuilder();
+        jsonString.append("[");
+
+        File cat = new File(getRootDir() + "/" + category);
+        if (!cat.exists()) {
+            promise.reject("Category doesn't exist");
+        }
+
+        File[] categoryFiles = cat.listFiles();
+        for (File file : categoryFiles) {
+            if (file.getName().endsWith(FILE_TYPE_AUDIO)) {
+                jsonString.append(file.getAbsolutePath() + ",");
+            }
+        }
+
+        //get rid of the trailing comma
+        jsonString.deleteCharAt(jsonString.length() - 1);
+
+
+        jsonString.append("]");
+        promise.resolve(jsonString.toString());
+    }
+
+
+    @ReactMethod
+    public void getAllCategories(Promise promise) {
+        StringBuilder jsonString = new StringBuilder();
+        jsonString.append("[");
+
         File root = new File(getRootDir());
 
         File[] filesInRoot = root.listFiles();
         for (File file : filesInRoot) {
             if (file.isDirectory()) {
-                categories.add(file.getName());
+                jsonString.append(file.getAbsolutePath() + ",");
             }
         }
 
-        String[] categoriesArray = new String[categories.size()];
-        categoriesArray = categories.toArray(categoriesArray);
-        return categoriesArray;
+        //get rid of the trailing comma
+        jsonString.deleteCharAt(jsonString.length() - 1);
+
+        jsonString.append("]");
+        promise.resolve(jsonString.toString());
     }
 
     @ReactMethod
@@ -141,8 +203,16 @@ public class FileManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void moveMessageToCategoryFromCategory(String fromCategory, String toCategory, 
-            String messageName, Promise promise) {
+    public void moveMessageToCategoryFromCategory(String fromCategory, String toCategory,
+            String messageName, Promise promise)
+    {
+        moveMessage(fromCategory, toCategory, messageName, promise, FILE_TYPE_AUDIO);
+        String temp = messageName.replace(FILE_TYPE_AUDIO, FILE_TYPE_TEXT);
+        moveMessage(fromCategory, toCategory, temp, promise, FILE_TYPE_TEXT);
+    }
+    @ReactMethod
+    public void moveMessage(String fromCategory, String toCategory, 
+            String messageName, Promise promise, String filetype) {
 
         String newFilePath;
         String oldFilePath;
@@ -176,7 +246,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         // If there already is a file @ new file path
         if (new File(newFilePath).exists()) {
             // Append a -copy onto the file name to prevent 2 files with same name
-            newFilePath = newFilePath.replace(FILE_TYPE, "-copy" + FILE_TYPE);
+            newFilePath = newFilePath.replace(filetype, "-copy" + filetype);
         }
 
         InputStream in;
