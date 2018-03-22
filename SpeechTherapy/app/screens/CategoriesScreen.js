@@ -13,9 +13,8 @@ import {
     ToastAndroid
 } from 'react-native';
 import {List, ListItem} from 'react-native-elements';
-//import Icon from 'react-native-vector-icons/EvilIcons'; //
+import Icon from 'react-native-vector-icons/EvilIcons'; 
 import CategoryScreen from '../screens/CategoryScreen';
-// import FileManager from 'home/sarah/Speech-Therapy-App/SpeechTherapy/android/app/src/main/java/FileManager';
 
 var CategoryArray = ["Greetings",
 "Food/Drink",
@@ -23,11 +22,6 @@ var CategoryArray = ["Greetings",
 "Goodbyes",
 "About Myself",
 "Weather"];
-
-
-// var promise1 = new Promise(function(resolve,reject) {
-//   setTimeout(resolve,100,'foo');
-// });
 
 var CategoryScreens = [new CategoryScreen()]
 type Props = {};
@@ -103,10 +97,9 @@ class CategoriesScreen extends Component<Props> {
                   onPress={this.onPressCategory}
                   rightIcon = {
                     <Icon
-                      name="trash"
+                      name="trash" //try changing to ei-trash if trash doesnt work
                       size={40}
                       onPress= {
-                        //CategoryName => this.setState({delCat:CategoryName}),
                         this.deleteCategory
                       }
                     />
