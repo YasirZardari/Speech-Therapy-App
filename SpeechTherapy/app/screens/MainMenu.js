@@ -49,7 +49,7 @@ class MainMenu extends Component<Props> {
 
         <TouchableOpacity
           style={styles.button4}
-          onPress={this.onPressCategories}
+          onPress={this.onPressTTS}
         >
           <Text style={styles.buttonText}>Text-to-Speech</Text>
         </TouchableOpacity>
