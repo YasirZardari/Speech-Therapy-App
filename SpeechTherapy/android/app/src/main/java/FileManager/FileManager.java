@@ -75,13 +75,7 @@ public class FileManager extends ReactContextBaseJavaModule {
 
         File[] messagesInCategory = cat.listFiles();
         for (File message : messagesInCategory) {
-<<<<<<< HEAD
             if (message.getName().endsWith(FILE_TYPE_AUDIO) || message.getName().endsWith(FILE_TYPE_TEXT)) {
-                
-=======
-            if (message.getName().endsWith(FILE_TYPE)) {
-
->>>>>>> 346b6c8fc3c648368f00e23d9ee69e06bc2b52b4
                 // Move the message from within the category to the root folder
                 moveMessageToRootFromCategory(categoryName, message.getName(), promise);
 
@@ -208,7 +202,6 @@ public class FileManager extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void moveMessageToCategoryFromCategory(String fromCategory, String toCategory,
-<<<<<<< HEAD
             String messageName, Promise promise)
     {
         moveMessage(fromCategory, toCategory, messageName, promise, FILE_TYPE_AUDIO);
@@ -218,9 +211,6 @@ public class FileManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void moveMessage(String fromCategory, String toCategory, 
             String messageName, Promise promise, String filetype) {
-=======
-            String messageName, Promise promise) {
->>>>>>> 346b6c8fc3c648368f00e23d9ee69e06bc2b52b4
 
         String newFilePath;
         String oldFilePath;
