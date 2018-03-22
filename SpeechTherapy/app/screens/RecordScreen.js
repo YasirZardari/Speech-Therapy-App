@@ -15,15 +15,16 @@ type Props = {};
 class RecordScreen extends Component<Props> {
   constructor(props) {
     super(props);
-    this.state = {filename: ''};
 
-    this.filename = '';
-    this.hasPermission = false;
-    this.isRecording = false;
+    this.state = {
+      hasPermission: false,
+      isRecording: false,
+      buttonText: 'Start Recording'
+    }
   }
 
   componentWillMount() {
-    if (!this.hasPermission) {
+    if (!this.state.hasPermission) {
       WavAudioRecord.checkAuthorisation().then(function(hasPermission) {
         if (hasPermission) {
           ToastAndroid.show('Has Mic Permission', ToastAndroid.SHORT);
@@ -31,53 +32,30 @@ class RecordScreen extends Component<Props> {
           ToastAndroid.show('No Mic Permission', ToastAndroid.SHORT);
         }
       });
-      this.hasPermission = true;
+      this.setState({ hasPermission: true });
     }
   }
 
   onPressRecord = () => {
-    if (!this.isRecording) {
+    if (!this.state.isRecording) {
+      // start recording
       WavAudioRecord.startRecording();
-      ToastAndroid.show('Rec Started', ToastAndroid.SHORT);
+      this.setState({ isRecording: true, buttonText: 'Stop Recording'});
     } else {
       WavAudioRecord.stopRecording();
-
-      // set filepath
-      this.filename = this.state.filename;
-      if (this.filename === '') {
-        this.filename = 'speechrec';
-      }
-      WavAudioRecord.setPath("/" + this.filename + ".wav");
-
-      // save recording
-      WavAudioRecord.saveRecording().then(function(allowedToSave){
-        if (allowedToSave) {
-            ToastAndroid.show('Rec Stopped and Saved', ToastAndroid.SHORT);
-            pathSet = false;
-        } else {
-          ToastAndroid.show('Rec Stopped, Not Saved', ToastAndroid.SHORT);
-        }
-      });
+      this.setState({ isRecording: false, buttonText: 'Start Recording' });
+      this.props.navigation.navigate('SaveRecordingScreen');
     }
-    this.isRecording = !this.isRecording;
   }
 
   render() {
     return (
       <View style={styles.container}>
 
-        <View style={styles.textInputContainer}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="File name"
-            onChangeText={(filename) => this.setState({filename})}
-          />
-        </View>
-
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}
+          <TouchableOpacity style={[styles.button, this.state.isRecording && styles.buttonOnRec]}
             onPress={this.onPressRecord}>
-            <Text style={styles.buttonText}>Record</Text>
+            <Text style={styles.buttonText}>{ this.state.buttonText }</Text>
           </TouchableOpacity>
         </View>
 
@@ -105,6 +83,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#64B5F6'
+  },
+  buttonOnRec: {
+    backgroundColor: 'red'
   },
   buttonText: {
     fontSize: 36
