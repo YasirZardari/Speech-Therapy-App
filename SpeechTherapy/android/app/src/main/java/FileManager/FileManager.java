@@ -90,7 +90,7 @@ public class FileManager extends ReactContextBaseJavaModule {
 
 
     @ReactMethod
-    public ArrayList<String> getAllMessageFilePathFromCategory(String category, Promise promise) {
+    public String[] getAllMessageFilePathFromCategory(String category, Promise promise) {
         ArrayList<String> filePaths = new ArrayList<String>();
 
         File cat = new File(getRootDir() + "/" + category);
@@ -106,12 +106,14 @@ public class FileManager extends ReactContextBaseJavaModule {
             }
         }
 
-        return filePaths;
+        String[] filePathsArray = new String[filePaths.size()];
+        filePathsArray = filePaths.toArray(filePathsArray);
+        return filePathsArray;
     }
 
 
     @ReactMethod
-    public ArrayList<String> getAllCategories() {
+    public String[] getAllCategories() {
         ArrayList<String> categories = new ArrayList<String>();
         File root = new File(getRootDir());
 
@@ -122,7 +124,9 @@ public class FileManager extends ReactContextBaseJavaModule {
             }
         }
 
-        return categories;
+        String[] categoriesArray = new String[categories.size()];
+        categoriesArray = categories.toArray(categoriesArray);
+        return categoriesArray;
     }
 
     @ReactMethod
