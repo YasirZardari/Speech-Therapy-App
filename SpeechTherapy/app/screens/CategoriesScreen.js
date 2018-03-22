@@ -8,15 +8,18 @@ import {
     Dimensions,
     TextInput,
     Button,
+    NativeModules,
     TouchableOpacity,
     TouchableHighlight,
     ToastAndroid
 } from 'react-native';
-import {List, ListItem} from 'react-native-elements'; //npm install react-native-elements
-import Icon from 'react-native-vector-icons/EvilIcons'; // npm install react-native-vector-icons
+const fileManager = NativeModules.FileManager;
+import {List, ListItem} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/EvilIcons'; //
 import CategoryScreen from '../screens/CategoryScreen';
 
-var CategoryArray = ["Greetings",
+var CategoryArray = //fileManager.getAllCategories();
+ ["Greetings",
 "Food/Drink",
 "Questions",
 "Goodbyes",
@@ -42,16 +45,16 @@ class CategoriesScreen extends Component<Props> {
       return;
     }
     //Adding Items To Array.
-     CategoryArray.push(this.state.temp.toString());
+    CategoryArray.push(this.state.temp.toString());
+    //fileManager.createCategory(this.state.temp.toString());
     this.setState({CategoryArray});
     this.state.temp = "";
-
     ToastAndroid.show('New Category Created', ToastAndroid.SHORT);
     }
   RemoveItemFromArray=(itemToDelete)=>{
     for (var i=CategoryArray.length-1; i>=0; i--) {
-      if (array[i] === this.state.temp.toString()) {
-        array.splice(i, 1);
+      if (CategoryArray[i] === itemToDelete) {
+        CategoryArray.splice(i, 1);
       }
     }
   }
@@ -62,7 +65,8 @@ class CategoriesScreen extends Component<Props> {
       [
         { text: "Cancel",onPress:() => console.log('Cancel Pressed'),
         style:'cancel'},
-        {text: "OK",onPress:() => {this.RemoveItemFromArray}}
+        {text: "OK",onPress:() => //fileManager.deleteCategory(stringToDelete)}
+        {this.RemoveItemFromArray(stringToDelete)}}
       ], {cancelable:false}
     );
   }
@@ -97,10 +101,10 @@ class CategoriesScreen extends Component<Props> {
                   onPress={this.onPressCategory}
                   rightIcon = {
                     <Icon
-                      name="trash" //try changing to ei-trash if trash doesnt work
+                      name="trash"//try changing to ei-trash if trash doesnt work
                       size={40}
                       onPress= {
-                        this.deleteCategory
+                        () =>this.deleteCategory(item)
                       }
                     />
                   }
