@@ -10,8 +10,23 @@ import {
   ToastAndroid
 } from 'react-native';
 
+import DialogAndroid from 'react-native-dialogs';
+import { Dropdown } from 'react-native-material-dropdown';
+
 const WavAudioRecord = NativeModules.WavAudioRecord;
 const FileManager = NativeModules.FileManager;
+
+// Separating this out because I'm using this in an "if" statement
+let valNewCategory = '<New Category>';
+let valUncategorized = '<All Files>';
+
+let data = [
+  { value: valUncategorized, },
+  { value: valNewCategory, },
+  { value: 'Banana', },
+  { value: 'Mango', },
+  { value: 'Pear', }
+];
 
 type Props = {};
 class SaveRecordingScreen extends Component<Props> {
@@ -20,7 +35,47 @@ class SaveRecordingScreen extends Component<Props> {
 
     this.state = {
       filename: 'speechrec',
-      category: ''
+      category: valUncategorized,
+      path: '',
+    }
+
+    this.onPressSave = this.onPressSave.bind(this);
+  }
+
+  showDialog = function () {
+    var dialog = new DialogAndroid();
+    dialog.set({
+      title: 'Create a category',
+      content: 'New category name',
+      positiveText: 'OK',
+      negativeText: 'Cancel',
+      input: {
+        callback: this.dialogInputCallback,
+      }
+    });
+    dialog.show();
+  }
+
+  onCreateNewCategory = () => {
+    this.showDialog();
+  }
+
+  dialogInputCallback = (input) => {
+    if (input !== '') {
+      FileManager.createCategory(input);
+      var newObject = { value: input };
+      data.push(newObject);
+    }
+  }
+
+  onCategoryChosen = (value,index,data) => {
+    if (value === valNewCategory) {
+      this.onCreateNewCategory();
+    } else if (value === valUncategorized) {
+      this.setState({ category: '', path: '' });
+    } else {
+      this.setState({ category: value });
+      this.setState({ path: '/' + value + '/'});
     }
   }
 
@@ -28,10 +83,9 @@ class SaveRecordingScreen extends Component<Props> {
     // set filepath, if field empty - give default name "speechrec"
     if (this.state.filename === '') {
       this.setState({ filename:'speechrec' });
-      ToastAndroid.show("Filename: " + this.state.filename, ToastAndroid.SHORT);
     }
 
-    WavAudioRecord.setPath("/" + this.state.filename + ".wav");
+    WavAudioRecord.setPath(this.state.path + this.state.filename + ".wav");
 
     // If promise is not resolved, recoring still will save.
     // If for some reason the saving process fails,
@@ -39,7 +93,7 @@ class SaveRecordingScreen extends Component<Props> {
     WavAudioRecord.saveRecording()
     .then(function(resolvedVal){
       // on promise resolve
-      ToastAndroid.show('Rec Saved', ToastAndroid.SHORT);
+      ToastAndroid.show('Recording Saved', ToastAndroid.SHORT);
     },function(rejectVal){
       // on promise reject
       ToastAndroid.show('Rec NOT Saved', ToastAndroid.SHORT);
@@ -67,15 +121,14 @@ class SaveRecordingScreen extends Component<Props> {
             onChangeText={(filename) => this.setState({ filename })}
           />
 
-          <View style={styles.categoryContainer}>
-            <Text style={styles.formText}>Select category</Text>
-
-            <TouchableOpacity style={styles.categoryButton}
-              onPress={this.onPressSave}>
-              <Text style={styles.buttonText}>+</Text>
-            </TouchableOpacity>
+          <View style={styles.dropdownContainer}>
+            <Dropdown
+              lablel='Category'
+              value={valUncategorized}
+              data={data}
+              onChangeText={this.onCategoryChosen}
+            />
           </View>
-
         </View>
 
         <View style={styles.buttonContainer}>
@@ -105,30 +158,23 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flex: 2,
+    paddingLeft: 30,
+    paddingRight: 30,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  categoryContainer: {
-    flexDirection: 'row',
-    marginTop: 30
+    alignSelf: 'stretch',
   },
   buttonContainer: {
     flex: 1,
     width: 320,
     justifyContent: 'flex-start',
   },
+  dropdownContainer: {
+    alignSelf: 'stretch',
+  },
   formText: {
     alignSelf: 'stretch',
     fontSize: 32
-  },
-  categoryButton: {
-    width:50,
-    height: 50,
-    marginLeft: 30,
-    backgroundColor: 'yellow',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#03A9F4'
   },
   bigButton: {
     height: 70,
