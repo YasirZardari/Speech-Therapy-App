@@ -14,6 +14,7 @@ import java.util.List;
 
 import Audio.WavAudioRecordPackage;
 import FileManager.FileManagerPackage;
+import com.aakashns.reactnativedialogs.ReactNativeDialogsPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -29,7 +30,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new RNSoundPackage(),
           new WavAudioRecordPackage(),
-          new FileManagerPackage()
+          new FileManagerPackage(),
+          new ReactNativeDialogsPackage()
       );
     }
 
