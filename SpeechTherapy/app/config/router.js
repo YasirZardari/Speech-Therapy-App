@@ -28,6 +28,9 @@ export const Root = StackNavigator({
       headerTitleStyle: { color: '#FFFFFF' },
       headerTintColor: '#FFFFFF',
     }
+  },
+  TTSScreen: {
+    screen: TTSScreen
   }
 });
 

@@ -76,6 +76,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         File[] messagesInCategory = cat.listFiles();
         for (File message : messagesInCategory) {
             if (message.getName().endsWith(FILE_TYPE_AUDIO) || message.getName().endsWith(FILE_TYPE_TEXT)) {
+                
                 // Move the message from within the category to the root folder
                 moveMessageToRootFromCategory(categoryName, message.getName(), promise);
 
@@ -90,11 +91,11 @@ public class FileManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void createTextFile(String fileName, String content, Promise promise)
+    public void createTextFile(String category, String fileName, String content, Promise promise)
     {
         try
         {
-            File file = new File(getRootDir() + File.separator + fileName);
+            File file = new File(getRootDir() + File.separator + category + File.separator + fileName);
             if(file.exists()) file.delete();
     
             file.createNewFile();
@@ -146,7 +147,7 @@ public class FileManager extends ReactContextBaseJavaModule {
     public void getAllMessageFilePathFromCategory(String category, Promise promise) {
 
         StringBuilder jsonString = new StringBuilder();
-        jsonString.append("[");
+        jsonString.append("[ ");
 
         File cat = new File(getRootDir() + "/" + category);
         if (!cat.exists()) {
@@ -156,7 +157,8 @@ public class FileManager extends ReactContextBaseJavaModule {
         File[] categoryFiles = cat.listFiles();
         for (File file : categoryFiles) {
             if (file.getName().endsWith(FILE_TYPE_AUDIO)) {
-                jsonString.append(file.getAbsolutePath() + ",");
+                int index = file.getAbsolutePath().lastIndexOf("/");
+                jsonString.append(file.getAbsolutePath().substring(index) + ",");
             }
         }
 
@@ -172,14 +174,15 @@ public class FileManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getAllCategories(Promise promise) {
         StringBuilder jsonString = new StringBuilder();
-        jsonString.append("[");
+        jsonString.append("[ ");
 
         File root = new File(getRootDir());
 
         File[] filesInRoot = root.listFiles();
         for (File file : filesInRoot) {
             if (file.isDirectory()) {
-                jsonString.append(file.getAbsolutePath() + ",");
+                int index = file.getAbsolutePath().lastIndexOf("/");
+                jsonString.append(file.getAbsolutePath().substring(index) + ",");
             }
         }
 
