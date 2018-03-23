@@ -178,8 +178,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         File[] categoryFiles = cat.listFiles();
         for (File file : categoryFiles) {
             if (file.getName().endsWith(FILE_TYPE_AUDIO)) {
-                int index = file.getAbsolutePath().lastIndexOf("/");
-                jsonString.append(file.getAbsolutePath().substring(index) + ",");
+                jsonString.append("\"" + file.getName() + "\",");
             }
         }
 
@@ -202,8 +201,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         File[] filesInRoot = root.listFiles();
         for (File file : filesInRoot) {
             if (file.isDirectory()) {
-                int index = file.getAbsolutePath().lastIndexOf("/");
-                jsonString.append(file.getAbsolutePath().substring(index) + ",");
+                jsonString.append("\"" + file.getName() + "\",");
             }
         }
 
