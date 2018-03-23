@@ -91,11 +91,18 @@ public class FileManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void createTextFileInRoot(String filename, String content, Promise promise)
+    {
+        createTextFile(null, filename, content, promise);
+    }
+
+    @ReactMethod
     public void createTextFile(String category, String fileName, String content, Promise promise)
     {
         try
         {
-            File file = new File(getRootDir() + File.separator + category + File.separator + fileName);
+            String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename
+            File file = new File(filepath);
             if(file.exists()) file.delete();
     
             file.createNewFile();
@@ -112,9 +119,16 @@ public class FileManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void deleteFile(String filename, Promise promise)
+    public void deleteFileInRoot(String filename, Promise promise)
     {
-        File file = new File(getRootDir() + File.separator + filename);
+        deleteFile(null, filename, promise);
+    }
+
+    @ReactMethod
+    public void deleteFile(String category, String filename, Promise promise)
+    {
+        String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename
+        File file = new File(filepath);
         if(!file.exists()) promise.resolve("File does not exist!");
         else
         {
@@ -124,9 +138,16 @@ public class FileManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getTextFileContentInRoot(String filename, Promise promise)
+    {
+        getTextFileContent(null, filename, promise);
+    }
+
+    @ReactMethod
     public void getTextFileContent(String category, String filename, Promise promise)
     {
-        File file = new File(getRootDir() + File.separator + category + File.separator + filename);
+        String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename
+        File file = new File(filepath);
         if(!file.exists()) promise.reject("Error: no such file");
         else
         {
