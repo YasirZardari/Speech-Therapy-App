@@ -97,11 +97,11 @@ public class FileManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void createTextFile(String category, String fileName, String content, Promise promise)
+    public void createTextFile(String category, String filename, String content, Promise promise)
     {
         try
         {
-            String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename
+            String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename;
             File file = new File(filepath);
             if(file.exists()) file.delete();
     
@@ -127,7 +127,7 @@ public class FileManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void deleteFile(String category, String filename, Promise promise)
     {
-        String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename
+        String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename;
         File file = new File(filepath);
         if(!file.exists()) promise.resolve("File does not exist!");
         else
@@ -146,7 +146,7 @@ public class FileManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getTextFileContent(String category, String filename, Promise promise)
     {
-        String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename
+        String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename;
         File file = new File(filepath);
         if(!file.exists()) promise.reject("Error: no such file");
         else
