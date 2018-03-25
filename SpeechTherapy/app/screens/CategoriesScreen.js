@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 const fileManager = NativeModules.FileManager;
 import {List, ListItem} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/EvilIcons'; //
+import Icon from 'react-native-vector-icons/EvilIcons';
 import CategoryScreen from '../screens/CategoryScreen';
 
 var CategoryArray = //fileManager.getAllCategories();
@@ -28,8 +28,8 @@ var CategoryArray = //fileManager.getAllCategories();
 
 var CategoryScreens = [new CategoryScreen()]
 type Props = {};
-class CategoriesScreen extends Component<Props> {
 
+class CategoriesScreen extends Component<Props> {
   constructor(props) {
     super(props)
     this.state = {
@@ -77,17 +77,19 @@ class CategoriesScreen extends Component<Props> {
        return (
          <List containerStyle = {{
            marginTop:0,
-          marginBottom:80}}>
+          marginBottom:80,borderTopWidth:0,borderBottomWidth:0}}>
         <TextInput
             value = {this.state.temp}
+            underlineColorAndroid='transparent'
+            autoCorrect = {false}
             onChangeText={TextInputValue => this.setState({temp : TextInputValue })}
-            placeholder="Click Here To Name A New Category"
+            placeholder="Tap Here To Name A New Category"
             autoCapitalize='words'
             style={styles.enterText}
         />
         <Button
-        title="Click Here To Confirm This New Category" onPress={this.AddItemsToArray}
-        style=""
+        title="Tap Here To Confirm This New Category" onPress={this.AddItemsToArray}
+        style={{backgroundColor: '#52b2d8'}}
         />
           <FlatList
             data = {CategoryArray}
@@ -98,10 +100,11 @@ class CategoriesScreen extends Component<Props> {
               return (
               <ListItem
                   title = {item}
-                  titleStyle = {{fontSize:25,padding:22,textAlign:'left'}}
+                  titleStyle = {styles.categoryText}
                   onPress={this.onPressCategory}
                   rightIcon = {
                     <Icon
+                      raised
                       name="trash"//try changing to ei-trash if trash doesnt work
                       size={40}
                       onPress= {
@@ -109,7 +112,7 @@ class CategoriesScreen extends Component<Props> {
                       }
                     />
                   }
-                  containerStyle = {{borderBottomWidth :1,height:80,padding:25}}
+                  containerStyle = {styles.container}
                   />
                 )
               }
@@ -124,21 +127,22 @@ export default CategoriesScreen;
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
-   justifyContent: 'center',
-   alignItems: 'center',
-   backgroundColor: 'white'
+  borderBottomWidth :1,
+  height:80,
+  padding:25
   },
   enterText: {
     textAlign: 'center',
     height: 45,
-    width:350
+    width:350,
+    borderTopWidth:0,
+    fontFamily:'sans-serif-condensed'
   },
   categoryText: {
-    padding: 20,
-    fontSize: 25,
-    textAlign: 'center',
-    justifyContent: 'center',
-    color: '#007aff'
+    fontSize:23,
+    padding:22,
+    textAlign:'left',
+    fontFamily: 'sans-serif-condensed'
+
   }
 })
