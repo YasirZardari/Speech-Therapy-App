@@ -17,6 +17,9 @@ class MainMenu extends Component<Props> {
   onPressCategories = () => {
     this.props.navigation.navigate('CategoriesScreen');
   }
+  onPressFavourites = () => {
+    this.props.navigation.navigate('FavouritesScreen');
+  }
   onPressTTS = () => {
     this.props.navigation.navigate('TTSScreen');
   }
@@ -27,29 +30,29 @@ class MainMenu extends Component<Props> {
         {/* <Text>Welcome to MainMenu</Text> */}
 
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button,{top:70}]}
           onPress={this.onPressRecord}
         >
-          <Text style={styles.buttonText}>Record Audio</Text>
+          <Text style={styles.buttonText}>Make a Recording</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button2}
+          style={[styles.button,{top:190}]}
           onPress={this.onPressCategories}
         >
           <Text style={styles.buttonText}>Categories</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button3}
-          onPress={this.onPressCategories}
+          style={[styles.button,{top:310}]}
+          onPress={this.onPressFavourites}
         >
           <Text style={styles.buttonText}>Favourites</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button4}
-          onPress={this.onPressTTS}
+          style={[styles.button,{top:430}]}
+          onPress={this.onPressTSS}
         >
           <Text style={styles.buttonText}>Text-to-Speech</Text>
         </TouchableOpacity>
@@ -65,51 +68,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F5FCFF'
   },
   button: {
     //alignItems: 'center',
-    backgroundColor: '#007aff',
+    backgroundColor: '#52b2d8',
     position: 'absolute',
-    top:50,
     left: (Dimensions.get('window').width / 2) - 150,
     padding: 10,
     width: 300,
-    height: 80
-  },
-  button2: {
-    //alignItems: 'center',
-    position: 'absolute',
-    top:170,
-    left: (Dimensions.get('window').width / 2) - 150,
-    backgroundColor: '#007aff',
-    padding: 10,
-    width: 300,
-    height: 80
-  },
-  button3: {
-    position: 'absolute',
-    top:290,
-    left: (Dimensions.get('window').width / 2) - 150,
-    backgroundColor: '#007aff',
-    padding: 10,
-    width: 300,
-    height: 80
-  },
-  button4: {
-    position: 'absolute',
-    top:410,
-    left: (Dimensions.get('window').width / 2) - 150,
-    backgroundColor: '#007aff',
-    padding: 10,
-    width: 300,
-    height: 80
+    height: 80,
+    borderRadius: 10,
+    elevation: 6
   },
   buttonText: {
-    padding: 20,
+    padding: 15,
     fontSize: 25,
     textAlign: 'center',
     justifyContent: 'center',
-    color: 'white'
+    color: 'white',
+    fontFamily:'sans-serif-condensed'
   }
 });
