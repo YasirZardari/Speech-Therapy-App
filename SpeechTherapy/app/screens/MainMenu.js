@@ -18,7 +18,7 @@ class MainMenu extends Component<Props> {
     this.props.navigation.navigate('CategoriesScreen');
   }
   onPressFavourites = () => {
-    this.props.navigation.navigate('FavouritesScreen');
+   this.props.navigation.navigate('FavouritesScreen');
   }
   onPressTTS = () => {
     this.props.navigation.navigate('TTSScreen');
@@ -52,7 +52,7 @@ class MainMenu extends Component<Props> {
 
         <TouchableOpacity
           style={[styles.button,{top:430}]}
-          onPress={this.onPressTSS}
+          onPress={this.onPressTTS}
         >
           <Text style={styles.buttonText}>Text-to-Speech</Text>
         </TouchableOpacity>
@@ -68,18 +68,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF'
+    backgroundColor: '#F5FCFF',
   },
   button: {
-    //alignItems: 'center',
-    backgroundColor: '#52b2d8',
-    position: 'absolute',
-    left: (Dimensions.get('window').width / 2) - 150,
-    padding: 10,
-    width: 300,
-    height: 80,
-    borderRadius: 10,
-    elevation: 6
+  backgroundColor: '#52b2d8',
+   position: 'absolute',
+   left: (Dimensions.get('window').width / 2) - 150,
+   padding: 10,
+   width: 300,
+   height: 80,
+   borderRadius: 10,
+   elevation: 6
   },
   buttonText: {
     padding: 15,
