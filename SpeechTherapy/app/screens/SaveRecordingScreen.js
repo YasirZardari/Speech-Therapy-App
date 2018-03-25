@@ -106,24 +106,25 @@ class SaveRecordingScreen extends Component<Props> {
     this.props.navigation.navigate('MainMenu');
   }
 
-  render() {
+render() {
     return (
       <View style={styles.container}>
         <StatusBar
-          backgroundColor="#0288D1"
+          backgroundColor="#52b2d8"
           barStyle="light-content"
         />
 
         <View style={styles.formContainer}>
           <TextInput
             style={styles.formText}
+            autoCapitalize= 'words'
             placeholder="Name"
             onChangeText={(filename) => this.setState({ filename })}
           />
 
           <View style={styles.dropdownContainer}>
             <Dropdown
-              lablel='Category'
+              label='Assign a Category'
               value={valUncategorized}
               data={data}
               onChangeText={this.onCategoryChosen}
@@ -137,7 +138,7 @@ class SaveRecordingScreen extends Component<Props> {
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.bigButton, {backgroundColor: '#F44336'}]}
+          <TouchableOpacity style={[styles.bigButton, {backgroundColor: '#d85454'}]}
             onPress={this.onPressSave}>
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
@@ -174,7 +175,8 @@ const styles = StyleSheet.create({
   },
   formText: {
     alignSelf: 'stretch',
-    fontSize: 32
+    fontSize: 32,
+    fontFamily:'sans-serif-condensed'
   },
   bigButton: {
     height: 70,
@@ -182,10 +184,13 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#03A9F4'
+    backgroundColor: '#52b2d8',
+    borderRadius: 10,
+    elevation: 5
   },
   buttonText: {
     fontSize: 36,
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    fontFamily:'sans-serif-condensed'
   },
 });
