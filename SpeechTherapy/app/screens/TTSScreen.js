@@ -17,16 +17,15 @@ class TTSScreen extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {phrase: ''};
-
-    this.phrase = '';
   }
 
   componentWillMount() {
-    
+
   }
 
   onPressSpeak = () => {
-    Tts.speak(this.phrase);
+    Tts.speak(this.state.phrase);
+    ToastAndroid.show('Playing phrase', ToastAndroid.SHORT);
   }
 
   render() {
@@ -35,9 +34,10 @@ class TTSScreen extends Component<Props> {
 
         <View style={styles.textInputContainer}>
           <TextInput
+            multiLine = {true}
             style={styles.textInput}
-            placeholder="Enter your phrase here."
-            onChangeText={(phrase) => this.setState({phrase})}
+            placeholder="Tap to enter a phrase here.."
+            onChangeText={TextInputValue => this.setState({phrase: TextInputValue})}
           />
         </View>
 
@@ -46,8 +46,12 @@ class TTSScreen extends Component<Props> {
             onPress={this.onPressSpeak}>
             <Text style={styles.buttonText}>Speak</Text>
           </TouchableOpacity>
-        </View>
 
+        </View>
+        <TouchableOpacity style= {[styles.button,{top:450}]}
+          onPress = {() => this.setState({phrase :''})}>
+          <Text style ={styles.buttonText}>Clear Text</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -63,27 +67,35 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
+    width: 320,
     justifyContent: 'flex-start',
-    paddingTop: 10
   },
   button: {
-    height: 150,
-    width: 320,
+    height: 70,
+    marginBottom: 15,
+    alignSelf: 'stretch',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#64B5F6'
+    backgroundColor: '#52b2d8',
+    borderRadius: 10,
+    elevation: 5
   },
   buttonText: {
-    fontSize: 36
+    fontSize: 36,
+    color: '#FFFFFF',
+    fontFamily:'sans-serif-condensed'
   },
   textInputContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: 10
+    flex: 2,
+    paddingLeft: 30,
+    paddingRight: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'stretch',
   },
   textInput: {
-    height: 40,
-    width: 320,
-    fontSize: 24
+    alignSelf: 'stretch',
+    fontSize: 32,
+    fontFamily:'sans-serif-condensed'
   }
 });
