@@ -17,28 +17,36 @@ const WavAudioRecord = NativeModules.WavAudioRecord;
 const FileManager = NativeModules.FileManager;
 
 // Separating this out because I'm using this in an "if" statement
-let valNewCategory = '<New Category>';
-let valUncategorized = '<All Files>';
+let valNewCategory = 'Add a New Category';
+let valUncategorized = 'All Recordings';
 
 let data = [
   { value: valUncategorized, },
-  { value: valNewCategory, },
-  { value: 'Banana', },
-  { value: 'Mango', },
-  { value: 'Pear', }
+  { value: valNewCategory },
+  { value: "Food"},
+  { value: "Drink"},
+  { value: "Questions"},
+  { value: "Goodbyes"},
+  { value: "About Myself"},
+  { value: "Weather"},
+  { value: "News"},
+  { value: "Sports"},
+];
+
+let yesNo = [
+  { value: 'Yes'},
+  { value: 'No'}
 ];
 
 type Props = {};
 class SaveRecordingScreen extends Component<Props> {
   constructor(props) {
     super(props);
-
     this.state = {
       filename: 'speechrec',
       category: valUncategorized,
-      path: '',
+      path: ''
     }
-
     this.onPressSave = this.onPressSave.bind(this);
   }
 
@@ -62,9 +70,10 @@ class SaveRecordingScreen extends Component<Props> {
 
   dialogInputCallback = (input) => {
     if (input !== '') {
-      FileManager.createCategory(input);
-      var newObject = { value: input };
+      // FileManager.createCategory(input);
+      var newObject = { value:input };
       data.push(newObject);
+
     }
   }
 
@@ -110,39 +119,41 @@ class SaveRecordingScreen extends Component<Props> {
     return (
       <View style={styles.container}>
         <StatusBar
-          backgroundColor="#0288D1"
+          backgroundColor="#52b2d8"
           barStyle="light-content"
         />
-
         <View style={styles.formContainer}>
           <TextInput
             style={styles.formText}
-            placeholder="Name"
+            autoCapitalize= 'words'
+            placeholder="Tap to name your recording"
             onChangeText={(filename) => this.setState({ filename })}
           />
-
-          <View style={styles.dropdownContainer}>
-            <Dropdown
-              lablel='Category'
-              value={valUncategorized}
-              data={data}
-              onChangeText={this.onCategoryChosen}
-            />
-          </View>
+        <View style={styles.dropdownContainer}>
+          <Dropdown
+            label='Assign a Category'
+            value={valUncategorized}
+            data={data}
+            onChangeText={this.onCategoryChosen}
+          />
+          <Dropdown
+            label='Assign to Favourites?'
+            value={'No'}
+            data={yesNo}
+          />
         </View>
-
+      </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.bigButton}
             onPress={this.onPressSave}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.bigButton, {backgroundColor: '#F44336'}]}
-            onPress={this.onPressSave}>
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
-
+        <TouchableOpacity style={[styles.bigButton, {backgroundColor: '#d85454'}]}
+          onPress={this.onPressSave}>
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
+      </View>
       </View>
     );
   }
@@ -174,7 +185,8 @@ const styles = StyleSheet.create({
   },
   formText: {
     alignSelf: 'stretch',
-    fontSize: 32
+    fontSize: 25,
+    fontFamily:'sans-serif-condensed'
   },
   bigButton: {
     height: 70,
@@ -182,10 +194,13 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#03A9F4'
+    backgroundColor: '#52b2d8',
+    borderRadius: 10,
+    elevation: 5
   },
   buttonText: {
     fontSize: 36,
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    fontFamily:'sans-serif-condensed'
   },
 });
