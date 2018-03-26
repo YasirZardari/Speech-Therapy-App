@@ -15,19 +15,25 @@ import {
 } from 'react-native';
 const fileManager = NativeModules.FileManager;
 import {List, ListItem} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/EvilIcons'; //
-import CategoryScreen from '../screens/CategoryScreen';
+import Icon from 'react-native-vector-icons/EvilIcons';
+// import CategoryScreen from '../screens/CategoryScreen';
 
-var CategoryArray = //fileManager.getAllCategories();
- ["Greetings",
-"Food/Drink",
+
+var CategoryArray = [
+"Food",
+"Drink",
 "Questions",
 "Goodbyes",
 "About Myself",
-"Weather"];
-
-var CategoryScreens = [new CategoryScreen()]
+"Weather",
+"News",
+"Sports",
+"Greetings"
+];
+// var CategoryScreens = [new CategoryScreen()]
 type Props = {};
+
+
 class CategoriesScreen extends Component<Props> {
 
   constructor(props) {
@@ -35,7 +41,9 @@ class CategoriesScreen extends Component<Props> {
     this.state = {
       temp: '',
     };
+
   }
+
   onPressCategory = () => {
     this.props.navigation.navigate('CategoryScreen')
   }
@@ -46,7 +54,7 @@ class CategoriesScreen extends Component<Props> {
     }
     //Adding Items To Array.
     CategoryArray.push(this.state.temp.toString());
-    //fileManager.createCategory(this.state.temp.toString());
+  //  fileManager.createCategory(this.state.temp.toString());
     this.setState({CategoryArray});
     this.state.temp = "";
     ToastAndroid.show('New Category Created', ToastAndroid.SHORT);
@@ -66,29 +74,37 @@ class CategoriesScreen extends Component<Props> {
       [
         { text: "Cancel",onPress:() => console.log('Cancel Pressed'),
         style:'cancel'},
-        {text: "OK",onPress:() => //fileManager.deleteCategory(stringToDelete)}
-        {this.RemoveItemFromArray(stringToDelete)}}
+        {text: "OK",onPress:() => //{fileManager.deleteCategory(stringToDelete)}}
+      {this.RemoveItemFromArray(stringToDelete)}}
       ], {cancelable:false}
     );
   }
-  _keyExtractor = (item, index) => item.id;
+  _keyExtractor = (item, index) => index.toString();
 
      render() {
        return (
          <List containerStyle = {{
-           marginTop:0,
-          marginBottom:80}}>
+           marginTop:0, height:(Dimensions.get('window').height) -100,
+          marginBottom:80,borderTopWidth:0,borderBottomWidth:0}}>
         <TextInput
             value = {this.state.temp}
+            underlineColorAndroid='transparent'
+            autoCorrect = {false}
             onChangeText={TextInputValue => this.setState({temp : TextInputValue })}
-            placeholder="Click Here To Name A New Category"
+            placeholder="Tap Here To Name A New Category"
             autoCapitalize='words'
             style={styles.enterText}
+
         />
-        <Button
-        title="Click Here To Confirm This New Category" onPress={this.AddItemsToArray}
-        style=""
-        />
+        <TouchableOpacity
+        onPress={this.AddItemsToArray}
+        style={{backgroundColor: '#52b2d8',width:Dimensions.get('window').width,
+          height:55,elevation:4,justifyContent:'center',alignItems:'center'}}>
+        <Text style= {{color:'white',fontFamily:'sans-serif-condensed',
+          fontWeight:'bold'}}>
+        TAP HERE TO CONFIRM THIS NEW CATEGORY
+        </Text>
+        </TouchableOpacity>
           <FlatList
             data = {CategoryArray}
             extraData={this.state}
@@ -98,18 +114,19 @@ class CategoriesScreen extends Component<Props> {
               return (
               <ListItem
                   title = {item}
-                  titleStyle = {{fontSize:25,padding:22,textAlign:'left'}}
+                  titleStyle = {styles.categoryText}
                   onPress={this.onPressCategory}
                   rightIcon = {
                     <Icon
-                      name="trash"//try changing to ei-trash if trash doesnt work
+                      raised
+                      name="trash"
                       size={40}
                       onPress= {
                         () =>this.deleteCategory(item)
                       }
                     />
                   }
-                  containerStyle = {{borderBottomWidth :1,height:80,padding:25}}
+                  containerStyle = {styles.container}
                   />
                 )
               }
@@ -124,21 +141,22 @@ export default CategoriesScreen;
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
-   justifyContent: 'center',
-   alignItems: 'center',
-   backgroundColor: 'white'
+  borderBottomWidth :1,
+  height:80,
+  padding:25
   },
   enterText: {
     textAlign: 'center',
     height: 45,
-    width:350
+    width:350,
+    borderTopWidth:0,
+    fontFamily:'sans-serif-condensed'
   },
   categoryText: {
-    padding: 20,
-    fontSize: 25,
-    textAlign: 'center',
-    justifyContent: 'center',
-    color: '#007aff'
+    fontSize:23,
+    padding:22,
+    textAlign:'left',
+    fontFamily: 'sans-serif-condensed'
+
   }
 })
