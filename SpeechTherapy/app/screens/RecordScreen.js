@@ -6,20 +6,23 @@ import {
   TextInput,
   TouchableOpacity,
   NativeModules,
-  ToastAndroid
+  ToastAndroid,
+  Dimensions
 } from 'react-native';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Pulse from 'react-native-pulse';
 const WavAudioRecord = NativeModules.WavAudioRecord;
 
 type Props = {};
 class RecordScreen extends Component<Props> {
   constructor(props) {
     super(props);
-
     this.state = {
       hasPermission: false,
       isRecording: false,
-      buttonText: 'Start Recording'
+      buttonText: 'Start Recording',
+      micIcon: 'mic-none',
+      pulse: false
     }
   }
 
@@ -39,26 +42,44 @@ class RecordScreen extends Component<Props> {
   onPressRecord = () => {
     if (!this.state.isRecording) {
       // start recording
+
+      this.setState({pulse:true})
       WavAudioRecord.startRecording();
-      this.setState({ isRecording: true, buttonText: 'Stop Recording'});
+      this.setState({ isRecording: true, buttonText: 'Stop Recording',
+      micIcon:'mic'});
     } else {
+      this.setState({pulse:false})
       WavAudioRecord.stopRecording();
-      this.setState({ isRecording: false, buttonText: 'Start Recording' });
+      this.setState({ isRecording: false, buttonText: 'Start Recording',micIcon:'mic-none' });
       this.props.navigation.navigate('SaveRecordingScreen');
     }
   }
 
   render() {
     return (
-      <View style={styles.container}>
-
+      <View style={styles.container}>{
+        this.state.pulse ? <Pulse
+          color ='skyblue'
+          numPulses={10}
+          diameter={350}
+          speed={12}
+          duration ={1000}
+          style= {{top:40, justifyContent:'center'}}/>: null
+      }
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={[styles.button, this.state.isRecording && styles.buttonOnRec]}
+        <Icon
+          name= {this.state.micIcon}
+          size={100}
+          style = {{top:150,left:(Dimensions.get('window').width / 2)-97
+        }}
+        />
+          <TouchableOpacity style={[styles.button,{top:290},
+            {justifyContent:'center'},{width: 320},
+             this.state.isRecording && styles.buttonOnRec]}
             onPress={this.onPressRecord}>
             <Text style={styles.buttonText}>{ this.state.buttonText }</Text>
           </TouchableOpacity>
         </View>
-
       </View>
     );
   }
@@ -70,7 +91,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F5FCFF'
   },
   buttonContainer: {
     flex: 1,
@@ -78,26 +99,31 @@ const styles = StyleSheet.create({
     paddingTop: 10
   },
   button: {
-    height: 150,
-    width: 320,
-    justifyContent: 'center',
+    height: 100,
     alignItems: 'center',
-    backgroundColor: '#64B5F6'
+    backgroundColor: '#52b2d8',
+    top: 290,
+    borderRadius: 10,
+    elevation: 6
   },
   buttonOnRec: {
-    backgroundColor: 'red'
+    backgroundColor: '#d85454'
   },
   buttonText: {
-    fontSize: 36
+    fontSize: 30,
+    fontFamily:'sans-serif-condensed',
+    color: 'white'
   },
   textInputContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    paddingBottom: 10
+    paddingBottom: 10,
+    fontFamily:'sans-serif-condensed'
   },
   textInput: {
     height: 40,
     width: 320,
-    fontSize: 24
+    fontSize: 24,
+    fontFamily:'sans-serif-condensed'
   }
 });
