@@ -20,12 +20,9 @@ const FileManager = NativeModules.FileManager;
 let valNewCategory = '<New Category>';
 let valUncategorized = '<All Files>';
 
-let data = [
+let categories = [
   { value: valUncategorized, },
   { value: valNewCategory, },
-  { value: 'Banana', },
-  { value: 'Mango', },
-  { value: 'Pear', }
 ];
 
 type Props = {};
@@ -39,7 +36,26 @@ class SaveRecordingScreen extends Component<Props> {
       path: '',
     }
 
+    FileManager.getAllCategories()
+    .then(function(returnedCategories){
+      var jsonCat = JSON.parse(returnedCategories);
+      for(var i = 0; i < jsonCat.length; i++) {
+        if(!this.alreadyInArray(categories,jsonCat[i])) {
+            categories.push({ value: jsonCat[i] });
+        }
+      }
+    }.bind(this));
+
     this.onPressSave = this.onPressSave.bind(this);
+  }
+
+  alreadyInArray = function (array,str) {
+    for(x in array) {
+      if (array[x].value === str) {
+        return true;
+      }
+    }
+    return false;
   }
 
   showDialog = function () {
@@ -64,7 +80,7 @@ class SaveRecordingScreen extends Component<Props> {
     if (input !== '') {
       FileManager.createCategory(input);
       var newObject = { value: input };
-      data.push(newObject);
+      categories.push(newObject);
     }
   }
 
@@ -126,7 +142,7 @@ render() {
             <Dropdown
               label='Assign a Category'
               value={valUncategorized}
-              data={data}
+              data={categories}
               onChangeText={this.onCategoryChosen}
             />
           </View>

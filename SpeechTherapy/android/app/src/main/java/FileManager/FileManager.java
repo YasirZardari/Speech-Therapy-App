@@ -96,10 +96,10 @@ public class FileManager extends ReactContextBaseJavaModule {
         {
             File file = new File(getRootDir() + File.separator + fileName);
             if(file.exists()) file.delete();
-    
+
             file.createNewFile();
             FileOutputStream os = new FileOutputStream(file);
-    
+
             os.write(content.getBytes());
             os.flush();
             os.close();
@@ -172,22 +172,22 @@ public class FileManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getAllCategories(Promise promise) {
         StringBuilder jsonString = new StringBuilder();
-        jsonString.append("[");
+         jsonString.append("[ ");
 
-        File root = new File(getRootDir());
+         File root = new File(getRootDir());
 
-        File[] filesInRoot = root.listFiles();
-        for (File file : filesInRoot) {
-            if (file.isDirectory()) {
-                jsonString.append(file.getAbsolutePath() + ",");
-            }
-        }
+         File[] filesInRoot = root.listFiles();
+         for (File file : filesInRoot) {
+             if (file.isDirectory()) {
+                 jsonString.append("\"" + file.getName() + "\",");
+             }
+         }
 
-        //get rid of the trailing comma
-        jsonString.deleteCharAt(jsonString.length() - 1);
+         //get rid of the trailing comma
+         jsonString.deleteCharAt(jsonString.length() - 1);
 
-        jsonString.append("]");
-        promise.resolve(jsonString.toString());
+         jsonString.append("]");
+         promise.resolve(jsonString.toString());
     }
 
     @ReactMethod
@@ -209,7 +209,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         moveMessage(fromCategory, toCategory, temp, promise, FILE_TYPE_TEXT);
     }
     @ReactMethod
-    public void moveMessage(String fromCategory, String toCategory, 
+    public void moveMessage(String fromCategory, String toCategory,
             String messageName, Promise promise, String filetype) {
 
         String newFilePath;
