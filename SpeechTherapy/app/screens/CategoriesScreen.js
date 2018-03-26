@@ -18,13 +18,7 @@ import {List, ListItem} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import CategoryScreen from '../screens/CategoryScreen';
 
-var CategoryArray = //fileManager.getAllCategories();
- ["Greetings",
-"Food/Drink",
-"Questions",
-"Goodbyes",
-"About Myself",
-"Weather"];
+var CategoryArray = []; //fileManager.getAllCategories();
 
 var CategoryScreens = [new CategoryScreen()]
 type Props = {};
@@ -35,23 +29,51 @@ class CategoriesScreen extends Component<Props> {
     this.state = {
       temp: '',
     };
+
+    fileManager.getAllCategories()
+    .then(function(returnedCategories){
+      var jsonCat = JSON.parse(returnedCategories);
+      for(var i = 0; i < jsonCat.length; i++) {
+        if(!this.alreadyInArray(CategoryArray,jsonCat[i])) {
+          CategoryArray.push(jsonCat[i]);
+        }
+      }
+      this.setState({CategoryArray});
+    }.bind(this));
   }
+
+  alreadyInArray = function (array,str) {
+    for(var i = 0; i < array.length; i++) {
+      if (array[i] === str) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   onPressCategory = () => {
     this.props.navigation.navigate('CategoryScreen')
   }
-  AddItemsToArray=()=>{
+
+  AddItemsToArray = () => {
     if (this.state.temp == ""){
       ToastAndroid.show('Please enter a name for your new category', ToastAndroid.SHORT);
       return;
     }
+    if (this.alreadyInArray(CategoryArray,this.state.temp)) {
+      ToastAndroid.show('Category already exists', ToastAndroid.SHORT);
+      return;
+    }
     //Adding Items To Array.
     CategoryArray.push(this.state.temp.toString());
-    //fileManager.createCategory(this.state.temp.toString());
+    fileManager.createCategory(this.state.temp);
+
     this.setState({CategoryArray});
     this.state.temp = "";
     ToastAndroid.show('New Category Created', ToastAndroid.SHORT);
-    }
-  RemoveItemFromArray=(itemToDelete)=>{
+  }
+
+  RemoveItemFromArray = (itemToDelete) => {
     for (var i=CategoryArray.length-1; i>=0; i--) {
       if (CategoryArray[i] === itemToDelete) {
         CategoryArray.splice(i, 1);
@@ -59,15 +81,20 @@ class CategoriesScreen extends Component<Props> {
     }
     this.setState({CategoryArray});
   }
-  deleteCategory=(stringToDelete)=>{
+
+  deleteCategory = (stringToDelete) => {
     Alert.alert(
       "Warning",
       "Are you sure you want to delete this category?",
       [
         { text: "Cancel",onPress:() => console.log('Cancel Pressed'),
         style:'cancel'},
-        {text: "OK",onPress:() => //fileManager.deleteCategory(stringToDelete)}
-        {this.RemoveItemFromArray(stringToDelete)}}
+        {text: "OK",onPress:() =>
+          {
+            this.RemoveItemFromArray(stringToDelete);
+            fileManager.deleteCategory(stringToDelete);
+          }
+      }
       ], {cancelable:false}
     );
   }

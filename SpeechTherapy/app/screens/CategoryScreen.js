@@ -30,7 +30,8 @@ class CategoryScreen extends Component<Props> {
     super(props)
     this.state = {temp: ''}
   }
-  RemoveItemFromArray=(itemToDelete)=>{
+
+  RemoveItemFromArray = (itemToDelete) => {
     for (var i=RecordingArray.length-1; i>=0; i--) {
       if (RecordingArray[i] === itemToDelete) {
         RecordingArray.splice(i, 1);
@@ -38,7 +39,8 @@ class CategoryScreen extends Component<Props> {
     }
     this.setState({RecordingArray});
   }
-  removeRecording=(stringToDelete)=>{
+  
+  removeRecording = (stringToDelete) => {
     Alert.alert(
       "Warning",
       "Are you sure you want to remove "+ stringToDelete + " from this category?",
