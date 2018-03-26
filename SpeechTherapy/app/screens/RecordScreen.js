@@ -30,9 +30,7 @@ class RecordScreen extends Component<Props> {
   componentWillMount() {
     if (!this.state.hasPermission) {
       WavAudioRecord.checkAuthorisation().then(function(hasPermission) {
-        if (hasPermission) {
-          ToastAndroid.show('Has Mic Permission', ToastAndroid.SHORT);
-        } else {
+        if (!hasPermission) {
           ToastAndroid.show('No Mic Permission', ToastAndroid.SHORT);
         }
       });

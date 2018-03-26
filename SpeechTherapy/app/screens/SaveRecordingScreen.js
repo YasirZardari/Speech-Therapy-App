@@ -122,7 +122,13 @@ class SaveRecordingScreen extends Component<Props> {
     this.props.navigation.navigate('MainMenu');
   }
 
+  onPressRerecord = () => {
+    this.props.navigate.goBack('RecordScreen', { go_back_key: this.props.navigation.state.key });
+  }
+
 render() {
+    const {goBack} = this.props.navigation;
+
     return (
       <View style={styles.container}>
         <StatusBar
@@ -130,7 +136,19 @@ render() {
           barStyle="light-content"
         />
 
-        <View style={styles.formContainer}>
+        <View style={styles.replayContainer}>
+          <TouchableOpacity style={styles.replayContainerButton}
+            onPress={this.onPressSave}>
+            <Text style={styles.buttonText}>Replay</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.replayContainerButton}
+            onPress={() => goBack()}>
+            <Text style={styles.buttonText}>Re-Record</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.saveContainer}>
           <TextInput
             style={styles.formText}
             autoCapitalize= 'words'
@@ -146,18 +164,18 @@ render() {
               onChangeText={this.onCategoryChosen}
             />
           </View>
-        </View>
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.bigButton}
-            onPress={this.onPressSave}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.saveContainerButton}
+              onPress={this.onPressSave}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.bigButton, {backgroundColor: '#d85454'}]}
-            onPress={this.onPressSave}>
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={[styles.saveContainerButton, {backgroundColor: '#d85454'}]}
+              onPress={this.onPressSave}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
       </View>
@@ -173,18 +191,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  formContainer: {
+  saveContainer: {
     flex: 2,
     paddingLeft: 30,
     paddingRight: 30,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
+    backgroundColor: 'green',
+  },
+  replayContainer: {
+    flex: 1,
+    paddingLeft: 30,
+    paddingRight: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    backgroundColor: 'tomato',
   },
   buttonContainer: {
-    flex: 1,
+    flexDirection: 'row',
     width: 320,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dropdownContainer: {
     alignSelf: 'stretch',
@@ -194,12 +223,21 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontFamily:'sans-serif-condensed'
   },
-  bigButton: {
+  saveContainerButton: {
+    flex: 1,
     height: 70,
-    marginBottom: 15,
-    alignSelf: 'stretch',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#52b2d8',
+    borderRadius: 10,
+    elevation: 5
+  },
+  replayContainerButton: {
+    height: 70,
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'stretch',
     backgroundColor: '#52b2d8',
     borderRadius: 10,
     elevation: 5
