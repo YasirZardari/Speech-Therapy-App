@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   StatusBar,
   NativeModules,
-  ToastAndroid
+  ToastAndroid,
+  CheckBox,
+  AsyncStorage
 } from 'react-native';
 
 import DialogAndroid from 'react-native-dialogs';
@@ -18,28 +20,28 @@ const Sound = require('react-native-sound');
 const WavAudioRecord = NativeModules.WavAudioRecord;
 const FileManager = NativeModules.FileManager;
 
+const FAV_KEY = "recordingsInFavourites";
+
 // Separating this out because I'm using this in an "if" statement
-let valNewCategory = 'Add a New Category';
-let valUncategorized = 'All Recordings';
+let valNewCategory = '<New Category>';
+let valUncategorized = '<All Files>';
 
 let categories = [
   { value: valUncategorized, },
-
   { value: valNewCategory, },
-
 ];
 
 type Props = {};
 class SaveRecordingScreen extends Component<Props> {
   constructor(props) {
     super(props);
+
     this.state = {
       filename: 'speechrec',
       category: valUncategorized,
-      path: ''
+      path: '',
+      saveToFav: false,
     }
-<<<<<<< HEAD
-=======
 
     FileManager.getAllCategories()
     .then(function(returnedCategories){
@@ -51,7 +53,6 @@ class SaveRecordingScreen extends Component<Props> {
       }
     }.bind(this));
 
->>>>>>> recsavescreen
     this.onPressSave = this.onPressSave.bind(this);
   }
 
@@ -84,16 +85,9 @@ class SaveRecordingScreen extends Component<Props> {
 
   dialogInputCallback = (input) => {
     if (input !== '') {
-<<<<<<< HEAD
-      // FileManager.createCategory(input);
-      var newObject = { value:input };
-      data.push(newObject);
-
-=======
       FileManager.createCategory(input);
       var newObject = { value: input };
       categories.push(newObject);
->>>>>>> recsavescreen
     }
   }
 
@@ -131,7 +125,48 @@ class SaveRecordingScreen extends Component<Props> {
       ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
     });
 
-    // take user to main menu after executing 'save' function
+    if (this.state.saveToFav) {
+      this.addToFavourites();
+    } else {
+      this.props.navigation.navigate('MainMenu');
+    }
+  }
+
+  async addToFavourites() {
+    var dataStr;
+    var dataJson = [];
+
+    try {
+        dataStr = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr !== null) {
+          dataJson = JSON.parse(dataStr);
+        }
+    } catch(error) {
+
+    }
+
+    for(var i = 0; i < dataJson.length; i++) {
+      if (dataJson[i].filename === this.state.filename) {
+        // If element already in array - remove it
+        dataJson.splice(i,1);
+      }
+    }
+
+    dataJson.push(
+      { filename: this.state.filename,
+        path: this.state.path + this.state.filename }
+    );
+
+    dataStr = JSON.stringify(dataJson);
+
+    try {
+      await AsyncStorage.setItem(FAV_KEY, dataStr);
+    } catch (error) {
+      // Error saving data
+    }
+
+    ToastAndroid.show(dataStr, ToastAndroid.SHORT);
     this.props.navigation.navigate('MainMenu');
   }
 
@@ -140,7 +175,22 @@ class SaveRecordingScreen extends Component<Props> {
   }
 
   onPressReplay = () => {
-    var whoosh = new Sound('/sdcard/MessageBank/Test1.wav')
+    var whoosh = new Sound('Test1.wav', '/sdcard/MessageBank/', (error) => {
+
+      if (error) {
+        ToastAndroid.show("Error", ToastAndroid.SHORT);
+        return;
+      }
+
+      whoosh.play((success) => {
+        if(success) {
+          ToastAndroid.show("Playing", ToastAndroid.SHORT);
+        } else {
+          ToastAndroid.show("Not Playing", ToastAndroid.SHORT);
+        }
+      });
+
+    });
   }
 
 render() {
@@ -152,44 +202,10 @@ render() {
           backgroundColor="#52b2d8"
           barStyle="light-content"
         />
-<<<<<<< HEAD
-        <View style={styles.formContainer}>
-          <TextInput
-            style={styles.formText}
-            autoCapitalize= 'words'
-            placeholder="Tap to name your recording"
-            onChangeText={(filename) => this.setState({ filename })}
-          />
-        <View style={styles.dropdownContainer}>
-          <Dropdown
-            label='Assign a Category'
-            value={valUncategorized}
-            data={data}
-            onChangeText={this.onCategoryChosen}
-          />
-          <Dropdown
-            label='Assign to Favourites?'
-            value={'No'}
-            data={yesNo}
-          />
-        </View>
-      </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.bigButton}
-            onPress={this.onPressSave}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.bigButton, {backgroundColor: '#d85454'}]}
-          onPress={this.onPressSave}>
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
-=======
 
         <View style={styles.replayContainer}>
           <TouchableOpacity style={styles.replayContainerButton}
-            onPress={this.onPressReply}>
+            onPress={this.onPressReplay}>
             <Text style={styles.buttonText}>Replay</Text>
           </TouchableOpacity>
 
@@ -216,6 +232,15 @@ render() {
             />
           </View>
 
+          <View style={styles.checkboxContainer}>
+            <CheckBox
+              value={this.state.saveToFav}
+              onValueChange={() => this.setState({ saveToFav: !this.state.saveToFav })}
+            />
+
+            <Text style={{marginTop: 5, fontSize: 16}}> Add to Favourites</Text>
+          </View>
+
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.saveContainerButton}
               onPress={this.onPressSave}>
@@ -229,7 +254,6 @@ render() {
           </View>
         </View>
 
->>>>>>> recsavescreen
       </View>
     );
   }
@@ -264,19 +288,22 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     width: 320,
+    paddingTop: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   dropdownContainer: {
+    paddingTop: 8,
     alignSelf: 'stretch',
+  },
+  checkboxContainer: {
+    paddingTop: 16,
+    alignSelf: 'stretch',
+    flexDirection: 'row',
   },
   formText: {
     alignSelf: 'stretch',
-<<<<<<< HEAD
-    fontSize: 25,
-=======
-    fontSize: 32,
->>>>>>> recsavescreen
+    fontSize: 24,
     fontFamily:'sans-serif-condensed'
   },
   saveContainerButton: {
@@ -287,8 +314,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#52b2d8',
     borderRadius: 10,
     elevation: 5
-<<<<<<< HEAD
-=======
   },
   replayContainerButton: {
     height: 70,
@@ -299,7 +324,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#52b2d8',
     borderRadius: 10,
     elevation: 5
->>>>>>> recsavescreen
   },
   buttonText: {
     fontSize: 36,

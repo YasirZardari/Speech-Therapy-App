@@ -61,11 +61,9 @@ class RecordScreen extends Component<Props> {
           color ='skyblue'
           numPulses={10}
           diameter={350}
-<<<<<<< HEAD
-          speed={12}
-=======
+
           speed={20}
->>>>>>> recsavescreen
+
           duration ={1000}
           style= {{top:40, justifyContent:'center'}}/>: null
       }

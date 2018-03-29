@@ -43,7 +43,7 @@ class CategoryScreen extends Component<Props> {
     }
     this.setState({RecordingArray});
   }
-<<<<<<< HEAD
+
   RemoveItemFromArray=(itemToDelete)=>{
     for (var i=RecordingArray.length-1; i>=0; i--) {
       if (RecordingArray[i] === itemToDelete) {
@@ -53,10 +53,7 @@ class CategoryScreen extends Component<Props> {
     this.setState({RecordingArray});
   }
   removeRecording=(stringToDelete)=>{
-=======
 
-  removeRecording = (stringToDelete) => {
->>>>>>> recsavescreen
     Alert.alert(
       "Warning",
       "Are you sure you want to remove "+ stringToDelete + " from this category?",
@@ -103,10 +100,7 @@ class CategoryScreen extends Component<Props> {
   }
 }
 export default CategoryScreen;
-<<<<<<< HEAD
-=======
 
->>>>>>> recsavescreen
 const styles = StyleSheet.create({
   container: {
     borderBottomWidth :1,
