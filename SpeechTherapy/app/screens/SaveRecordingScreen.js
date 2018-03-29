@@ -39,7 +39,7 @@ class SaveRecordingScreen extends Component<Props> {
     this.state = {
       filename: 'speechrec',
       category: valUncategorized,
-      path: '',
+      path: '/',
       saveToFav: false,
     }
 
@@ -95,7 +95,7 @@ class SaveRecordingScreen extends Component<Props> {
     if (value === valNewCategory) {
       this.onCreateNewCategory();
     } else if (value === valUncategorized) {
-      this.setState({ category: '', path: '' });
+      this.setState({ category: '', path: '/' });
     } else {
       this.setState({ category: value });
       this.setState({ path: '/' + value + '/'});
