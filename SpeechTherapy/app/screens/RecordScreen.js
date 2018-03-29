@@ -10,7 +10,8 @@ import {
   Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Pulse from 'react-native-pulse';
+import Pulse from 'react-native-pulse'; //npm install react-native-pulse --save
+
 const WavAudioRecord = NativeModules.WavAudioRecord;
 
 type Props = {};
@@ -29,9 +30,7 @@ class RecordScreen extends Component<Props> {
   componentWillMount() {
     if (!this.state.hasPermission) {
       WavAudioRecord.checkAuthorisation().then(function(hasPermission) {
-        if (hasPermission) {
-          ToastAndroid.show('Has Mic Permission', ToastAndroid.SHORT);
-        } else {
+        if (!hasPermission) {
           ToastAndroid.show('No Mic Permission', ToastAndroid.SHORT);
         }
       });
@@ -62,7 +61,11 @@ class RecordScreen extends Component<Props> {
           color ='skyblue'
           numPulses={10}
           diameter={350}
+<<<<<<< HEAD
           speed={12}
+=======
+          speed={20}
+>>>>>>> recsavescreen
           duration ={1000}
           style= {{top:40, justifyContent:'center'}}/>: null
       }

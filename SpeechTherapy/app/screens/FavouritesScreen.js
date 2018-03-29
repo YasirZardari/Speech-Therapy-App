@@ -17,11 +17,17 @@ const fileManager = NativeModules.FileManager;
 import {List, ListItem} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
 
+
+
+
 var RecordingArray = //fileManager.getAllCategories();
- ["How are you?",
- "Nice to see you",
- "Are you doing well?",
- "Hello"];
+ ["Greetings",
+"Food/Drink",
+"Questions",
+"Goodbyes",
+"About Myself",
+"Weather"];
+
 
 type Props = {};
 

@@ -42,7 +42,9 @@ export const Root = StackNavigator({
   CategoryScreen: {
     screen: CategoryScreen,
     navigationOptions: {
-    //  headerStyle: { backgroundColor: '#52b2d8' },
+
+      headerStyle: { backgroundColor: '#52b2d8' },
+
       headerTitleStyle: { color: '#FFFFFF' },
       headerTintColor: '#FFFFFF',
       fontFamily:'sans-serif-condensed'
@@ -52,7 +54,9 @@ export const Root = StackNavigator({
     screen: FavouritesScreen,
     navigationOptions: {
       title:'Favourites',
-    //  headerStyle: { backgroundColor: '#52b2d8' },
+
+      headerStyle: { backgroundColor: '#52b2d8' },
+
       headerTitleStyle: { color: '#FFFFFF' },
       headerTintColor: '#FFFFFF',
       fontFamily:'sans-serif-condensed'
@@ -62,6 +66,7 @@ export const Root = StackNavigator({
     screen: SaveRecordingScreen,
     navigationOptions: {
       title: 'Save Recording',
+
     //  headerStyle: { backgroundColor: '#52b2d8' },
       headerTitleStyle: { color: '#FFFFFF' },
       headerTintColor: '#FFFFFF',
@@ -76,8 +81,10 @@ export const Root = StackNavigator({
       headerTitleStyle: {color: '#FFFFFF' },
       headerTintColor: '#FFFFFF',
       fontFamily:'sans-serif-condensed'
+
     }
   }
+  
 });
 
 // { headerMode: 'none' } add to stack navigator to remove the action bar

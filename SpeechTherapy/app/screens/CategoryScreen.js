@@ -13,22 +13,37 @@ import {
     TouchableHighlight,
     ToastAndroid
 } from 'react-native';
-import { List, ListItem} from 'react-native-elements';
+
+import { List, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
 
-var RecordingArray = ["How are you?",
-"Nice to see you",
-"Are you doing well?",
-"My Name",
-"Hello"];
+var RecordingArray = ["Recording 1",
+"Recording 2",
+"Recording 3",
+"Recording 4",
+"Recording 5",
+"Recording 6"];
 
 
+type Props = {};
 class CategoryScreen extends Component<Props> {
-
   constructor(props) {
-    super(props)
-    this.state = {temp: ''}
+    super(props);
+    this.state = {  }
+
+
+    //this.props.navigation.navigate('MainMenu'); // testing
   }
+
+  RemoveItemFromArray = (itemToDelete) => {
+    for (var i=RecordingArray.length-1; i>=0; i--) {
+      if (RecordingArray[i] === itemToDelete) {
+        RecordingArray.splice(i, 1);
+      }
+    }
+    this.setState({RecordingArray});
+  }
+<<<<<<< HEAD
   RemoveItemFromArray=(itemToDelete)=>{
     for (var i=RecordingArray.length-1; i>=0; i--) {
       if (RecordingArray[i] === itemToDelete) {
@@ -38,6 +53,10 @@ class CategoryScreen extends Component<Props> {
     this.setState({RecordingArray});
   }
   removeRecording=(stringToDelete)=>{
+=======
+
+  removeRecording = (stringToDelete) => {
+>>>>>>> recsavescreen
     Alert.alert(
       "Warning",
       "Are you sure you want to remove "+ stringToDelete + " from this category?",
@@ -84,6 +103,10 @@ class CategoryScreen extends Component<Props> {
   }
 }
 export default CategoryScreen;
+<<<<<<< HEAD
+=======
+
+>>>>>>> recsavescreen
 const styles = StyleSheet.create({
   container: {
     borderBottomWidth :1,

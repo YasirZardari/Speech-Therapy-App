@@ -104,10 +104,10 @@ public class FileManager extends ReactContextBaseJavaModule {
             String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename;
             File file = new File(filepath);
             if(file.exists()) file.delete();
-    
+
             file.createNewFile();
             FileOutputStream os = new FileOutputStream(file);
-    
+
             os.write(content.getBytes());
             os.flush();
             os.close();
@@ -194,22 +194,26 @@ public class FileManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getAllCategories(Promise promise) {
         StringBuilder jsonString = new StringBuilder();
-        jsonString.append("[ ");
 
-        File root = new File(getRootDir());
+         jsonString.append("[ ");
 
-        File[] filesInRoot = root.listFiles();
-        for (File file : filesInRoot) {
-            if (file.isDirectory()) {
-                jsonString.append("\"" + file.getName() + "\",");
-            }
-        }
 
-        //get rid of the trailing comma
-        jsonString.deleteCharAt(jsonString.length() - 1);
+         File root = new File(getRootDir());
 
-        jsonString.append("]");
-        promise.resolve(jsonString.toString());
+
+         File[] filesInRoot = root.listFiles();
+         for (File file : filesInRoot) {
+             if (file.isDirectory()) {
+                 jsonString.append("\"" + file.getName() + "\",");
+             }
+         }
+
+
+         //get rid of the trailing comma
+         jsonString.deleteCharAt(jsonString.length() - 1);
+
+         jsonString.append("]");
+         promise.resolve(jsonString.toString());
     }
 
     @ReactMethod
@@ -231,7 +235,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         moveMessage(fromCategory, toCategory, temp, promise, FILE_TYPE_TEXT);
     }
     @ReactMethod
-    public void moveMessage(String fromCategory, String toCategory, 
+    public void moveMessage(String fromCategory, String toCategory,
             String messageName, Promise promise, String filetype) {
 
         String newFilePath;

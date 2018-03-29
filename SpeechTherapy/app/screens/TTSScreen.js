@@ -17,7 +17,9 @@ class TTSScreen extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {phrase: ''};
+
   }
+
   onPressSpeak = () => {
     Tts.speak(this.state.phrase);
     ToastAndroid.show('Playing phrase', ToastAndroid.SHORT);
