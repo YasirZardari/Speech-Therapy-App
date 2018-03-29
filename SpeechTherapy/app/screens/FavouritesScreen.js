@@ -11,13 +11,14 @@ import {
     NativeModules,
     TouchableOpacity,
     TouchableHighlight,
-    ToastAndroid
+    ToastAndroid,
+    AsyncStorage
 } from 'react-native';
 const fileManager = NativeModules.FileManager;
 import {List, ListItem} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
 
-
+const FAV_KEY = "recordingsInFavourites";
 
 var RecordingArray = //fileManager.getAllCategories();
  ["Greetings",
@@ -34,7 +35,27 @@ class FavouritesScreen extends Component<Props> {
   constructor(props) {
     super(props)
 
+
+    this.getFavourites()
+    .then((val) => {
+      ToastAndroid.show(val, ToastAndroid.SHORT);
+    });
   }
+
+  async getFavourites() {
+    try {
+        dataStr = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr !== null) {
+          dataJson = JSON.parse(dataStr);
+        }
+    } catch(error) {
+
+    }
+
+    return dataStr;
+  }
+
   onPressRecording= () => {
     ToastAndroid.show('Playing Recording', ToastAndroid.SHORT);
   }
