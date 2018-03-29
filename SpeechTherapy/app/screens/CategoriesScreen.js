@@ -42,6 +42,10 @@ class CategoriesScreen extends Component<Props> {
     }.bind(this));
   }
 
+  onPressCategory = () => {
+    this.props.navigation.navigate('CategoryScreen');
+  }
+
   alreadyInArray = function (array,str) {
     for(var i = 0; i < array.length; i++) {
       if (array[i] === str) {
@@ -49,10 +53,6 @@ class CategoriesScreen extends Component<Props> {
       }
     }
     return false;
-  }
-
-  onPressCategory = () => {
-    this.props.navigation.navigate('CategoryScreen')
   }
 
   AddItemsToArray = () => {
@@ -91,8 +91,8 @@ class CategoriesScreen extends Component<Props> {
         style:'cancel'},
         {text: "OK",onPress:() =>
           {
-            this.RemoveItemFromArray(stringToDelete);
             fileManager.deleteCategory(stringToDelete);
+            this.RemoveItemFromArray(stringToDelete);
           }
       }
       ], {cancelable:false}
@@ -128,14 +128,14 @@ class CategoriesScreen extends Component<Props> {
               <ListItem
                   title = {item}
                   titleStyle = {styles.categoryText}
-                  onPress={this.onPressCategory}
+                  onPress={ this.onPressCategory }
                   rightIcon = {
                     <Icon
                       raised
                       name="trash"//try changing to ei-trash if trash doesnt work
                       size={40}
                       onPress= {
-                        () =>this.deleteCategory(item)
+                        () => this.deleteCategory(item)
                       }
                     />
                   }

@@ -13,7 +13,7 @@ import {
     TouchableHighlight,
     ToastAndroid
 } from 'react-native';
-import { List, ListItem} from 'react-native-elements';
+import { List, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
 
 var RecordingArray = ["Recording 1",
@@ -23,12 +23,14 @@ var RecordingArray = ["Recording 1",
 "Recording 5",
 "Recording 6"];
 
-
+type Props = {};
 class CategoryScreen extends Component<Props> {
-
   constructor(props) {
-    super(props)
-    this.state = {temp: ''}
+    super(props);
+    this.state = {  }
+
+
+    //this.props.navigation.navigate('MainMenu'); // testing
   }
 
   RemoveItemFromArray = (itemToDelete) => {
@@ -39,7 +41,7 @@ class CategoryScreen extends Component<Props> {
     }
     this.setState({RecordingArray});
   }
-  
+
   removeRecording = (stringToDelete) => {
     Alert.alert(
       "Warning",
@@ -87,6 +89,7 @@ class CategoryScreen extends Component<Props> {
   }
 }
 export default CategoryScreen;
+
 const styles = StyleSheet.create({
   container: {
     borderBottomWidth :1,

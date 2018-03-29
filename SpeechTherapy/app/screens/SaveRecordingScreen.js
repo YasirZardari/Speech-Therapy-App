@@ -13,6 +13,8 @@ import {
 import DialogAndroid from 'react-native-dialogs';
 import { Dropdown } from 'react-native-material-dropdown';
 
+
+const Sound = require('react-native-sound');
 const WavAudioRecord = NativeModules.WavAudioRecord;
 const FileManager = NativeModules.FileManager;
 
@@ -126,6 +128,10 @@ class SaveRecordingScreen extends Component<Props> {
     this.props.navigate.goBack('RecordScreen', { go_back_key: this.props.navigation.state.key });
   }
 
+  onPressReplay = () => {
+    var whoosh = new Sound('/sdcard/MessageBank/Test1.wav')
+  }
+
 render() {
     const {goBack} = this.props.navigation;
 
@@ -138,7 +144,7 @@ render() {
 
         <View style={styles.replayContainer}>
           <TouchableOpacity style={styles.replayContainerButton}
-            onPress={this.onPressSave}>
+            onPress={this.onPressReply}>
             <Text style={styles.buttonText}>Replay</Text>
           </TouchableOpacity>
 
