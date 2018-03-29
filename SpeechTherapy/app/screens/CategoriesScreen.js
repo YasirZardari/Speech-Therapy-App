@@ -39,6 +39,7 @@ class CategoriesScreen extends Component<Props> {
         }
       }
       this.setState({CategoryArray});
+
     }.bind(this));
   }
 

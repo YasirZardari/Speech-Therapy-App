@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   StatusBar,
   NativeModules,
-  ToastAndroid
+  ToastAndroid,
+  CheckBox,
+  AsyncStorage
 } from 'react-native';
 
 import DialogAndroid from 'react-native-dialogs';
@@ -17,6 +19,8 @@ import { Dropdown } from 'react-native-material-dropdown';
 const Sound = require('react-native-sound');
 const WavAudioRecord = NativeModules.WavAudioRecord;
 const FileManager = NativeModules.FileManager;
+
+const FAV_KEY = "recordingsInFavourites";
 
 // Separating this out because I'm using this in an "if" statement
 let valNewCategory = '<New Category>';
@@ -36,6 +40,7 @@ class SaveRecordingScreen extends Component<Props> {
       filename: 'speechrec',
       category: valUncategorized,
       path: '',
+      saveToFav: false,
     }
 
     FileManager.getAllCategories()
@@ -120,7 +125,48 @@ class SaveRecordingScreen extends Component<Props> {
       ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
     });
 
-    // take user to main menu after executing 'save' function
+    if (this.state.saveToFav) {
+      this.addToFavourites();
+    } else {
+      this.props.navigation.navigate('MainMenu');
+    }
+  }
+
+  async addToFavourites() {
+    var dataStr;
+    var dataJson = [];
+
+    try {
+        dataStr = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr !== null) {
+          dataJson = JSON.parse(dataStr);
+        }
+    } catch(error) {
+
+    }
+
+    for(var i = 0; i < dataJson.length; i++) {
+      if (dataJson[i].filename === this.state.filename) {
+        // If element already in array - remove it
+        dataJson.splice(i,1);
+      }
+    }
+
+    dataJson.push(
+      { filename: this.state.filename,
+        path: this.state.path + this.state.filename }
+    );
+
+    dataStr = JSON.stringify(dataJson);
+
+    try {
+      await AsyncStorage.setItem(FAV_KEY, dataStr);
+    } catch (error) {
+      // Error saving data
+    }
+
+    ToastAndroid.show(dataStr, ToastAndroid.SHORT);
     this.props.navigation.navigate('MainMenu');
   }
 
@@ -129,7 +175,22 @@ class SaveRecordingScreen extends Component<Props> {
   }
 
   onPressReplay = () => {
-    var whoosh = new Sound('/sdcard/MessageBank/Test1.wav')
+    var whoosh = new Sound('Test1.wav', '/sdcard/MessageBank/', (error) => {
+
+      if (error) {
+        ToastAndroid.show("Error", ToastAndroid.SHORT);
+        return;
+      }
+
+      whoosh.play((success) => {
+        if(success) {
+          ToastAndroid.show("Playing", ToastAndroid.SHORT);
+        } else {
+          ToastAndroid.show("Not Playing", ToastAndroid.SHORT);
+        }
+      });
+
+    });
   }
 
 render() {
@@ -144,7 +205,7 @@ render() {
 
         <View style={styles.replayContainer}>
           <TouchableOpacity style={styles.replayContainerButton}
-            onPress={this.onPressReply}>
+            onPress={this.onPressReplay}>
             <Text style={styles.buttonText}>Replay</Text>
           </TouchableOpacity>
 
@@ -169,6 +230,15 @@ render() {
               data={categories}
               onChangeText={this.onCategoryChosen}
             />
+          </View>
+
+          <View style={styles.checkboxContainer}>
+            <CheckBox
+              value={this.state.saveToFav}
+              onValueChange={() => this.setState({ saveToFav: !this.state.saveToFav })}
+            />
+
+            <Text style={{marginTop: 5, fontSize: 16}}> Add to Favourites</Text>
           </View>
 
           <View style={styles.buttonContainer}>
@@ -218,15 +288,22 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     width: 320,
+    paddingTop: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   dropdownContainer: {
+    paddingTop: 8,
     alignSelf: 'stretch',
+  },
+  checkboxContainer: {
+    paddingTop: 16,
+    alignSelf: 'stretch',
+    flexDirection: 'row',
   },
   formText: {
     alignSelf: 'stretch',
-    fontSize: 32,
+    fontSize: 24,
     fontFamily:'sans-serif-condensed'
   },
   saveContainerButton: {
