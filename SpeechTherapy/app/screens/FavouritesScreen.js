@@ -56,6 +56,39 @@ class FavouritesScreen extends Component<Props> {
     return dataStr;
   }
 
+  // Pass in name of the file to remove from favourites in String format
+  async removeFromFavourites(valueToRemove) {
+    var dataStr;
+    var dataJson = [];
+
+    try {
+        dataStr = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr !== null) {
+          dataJson = JSON.parse(dataStr);
+        }
+    } catch(error) {
+
+    }
+
+    for(var i = 0; i < dataJson.length; i++) {
+      if (dataJson[i].filename === valueToRemove) {
+        // If element in array - remove it
+        dataJson.splice(i,1);
+      }
+    }
+
+    dataStr = JSON.stringify(dataJson);
+
+    try {
+      await AsyncStorage.setItem(FAV_KEY, dataStr);
+    } catch (error) {
+      // Error saving data
+    }
+
+    ToastAndroid.show(dataStr, ToastAndroid.SHORT);
+  }
+
   onPressRecording= () => {
     ToastAndroid.show('Playing Recording', ToastAndroid.SHORT);
   }
