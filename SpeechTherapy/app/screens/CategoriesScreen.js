@@ -108,77 +108,69 @@ class CategoriesScreen extends Component<Props> {
     );
   }
   _keyExtractor = (item, index) => index.toString();
-
-     render() {
+   render() {
        return (
-         <List containerStyle = {{
-
-           marginTop:0,
-
-          marginBottom:80,borderTopWidth:0,borderBottomWidth:0}}>
-        <TextInput
+         <View style = {styles.container}>
+        <View style = {{flex:1}}>
+         <View style = {{flex:1,padding:5, alignItems:'stretch'}}>
+          <TextInput
             value = {this.state.temp}
             underlineColorAndroid='transparent'
             autoCorrect = {false}
-            onChangeText={TextInputValue => this.setState({temp : TextInputValue })}
+            multiLine = {false}
+            onChangeText={TextInputValue => this.setState({temp: TextInputValue })}
             placeholder="Tap Here To Name A New Category"
             autoCapitalize='words'
             style={styles.enterText}
-
         />
-
-        <Button
-        title="Tap Here To Confirm This New Category" onPress={this.AddItemsToArray}
-        style={{backgroundColor: '#52b2d8'}}
-        />
-
-          <FlatList
-            data = {CategoryArray}
-            extraData={this.state}
-            keyExtractor={this._keyExtractor}
-            //id={item.id}
-            renderItem={({item}) => {
-              return (
-              <ListItem
-                  title = {item}
-                  titleStyle = {styles.categoryText}
-
-                  onPress={ this.onPressCategory }
-                  rightIcon = {
-                    <Icon
-                      raised
-                      name="trash"//try changing to ei-trash if trash doesnt work
-
-                      size={40}
-                      onPress= {
-                        () => this.deleteCategory(item)
-                      }
-                    />
-                  }
-                  containerStyle = {styles.container}
+       </View>
+        <View style = {{flex:1}}>
+        <TouchableOpacity
+          onPress={this.AddItemsToArray}
+          style = {styles.button}>
+        <Text style = {styles.buttonText}>
+            TAP HERE TO CONFIRM THIS NEW CATEGORY
+        </Text>
+        </TouchableOpacity>
+       </View>
+    </View>
+      <View style = {{flex:4}}>
+        <FlatList
+          style = {{flex:1}}
+          data = {CategoryArray}
+          extraData={this.state}
+          keyExtractor={this._keyExtractor}
+          renderItem={({item}) => {
+            return (
+            <ListItem
+                title = {item}
+                titleStyle = {styles.categoryText}
+                onPress={this.onPressCategory}
+                rightIcon = {
+                  <Icon
+                    raised
+                    name="trash"
+                    size={40}
+                    onPress= {() =>this.deleteCategory(item)}
                   />
-                )
-              }
-            }
-          />
-          </List>
-      );
-  }
+                }
+            />
+         )}}
+        />
+        </View>
+    </View>
+  );}
 }
 export default CategoriesScreen;
 
 
 const styles = StyleSheet.create({
   container: {
-  borderBottomWidth :1,
-  height:80,
-  padding:25
+  flex:1
   },
   enterText: {
+    alignContent:'stretch',
     textAlign: 'center',
-    height: 45,
-    width:350,
-    borderTopWidth:0,
     fontFamily:'sans-serif-condensed'
   },
   categoryText: {
@@ -186,6 +178,18 @@ const styles = StyleSheet.create({
     padding:22,
     textAlign:'left',
     fontFamily: 'sans-serif-condensed'
-
+  },
+  button: {
+   backgroundColor: '#52b2d8',
+   width:Dimensions.get('window').width,
+   height:55,
+   elevation:4,
+   justifyContent:'center',
+   alignItems:'center'
+  },
+  buttonText: {
+    color:'white',
+    fontFamily:'sans-serif-condensed',
+    fontWeight:'bold'
   }
 })
