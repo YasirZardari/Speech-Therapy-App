@@ -20,16 +20,6 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 
 const FAV_KEY = "recordingsInFavourites";
 
-
-var RecordingArray = //fileManager.getAllCategories();
- ["Greetings",
-"Food/Drink",
-"Questions",
-"Goodbyes",
-"About Myself",
-"Weather"];
-
-
 type Props = {};
 
 class FavouritesScreen extends Component<Props> {
@@ -37,14 +27,39 @@ class FavouritesScreen extends Component<Props> {
   constructor(props) {
     super(props)
 
-
+     this.state = {
+      JsonDataForList: [],
+     }
     this.getFavourites()
-    .then((val) => {
-      ToastAndroid.show(val, ToastAndroid.SHORT);
+    .then((val) =>{
+      //ToastAndroid.show(val, ToastAndroid.SHORT);
     });
+
   }
 
   async getFavourites() {
+    try
+    {
+        dataStr = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr !== null)
+        {
+          dataJson = JSON.parse(dataStr);
+          this.setState({ JsonDataForList: dataJson });
+        }
+    }
+     catch(error)
+     {
+
+     }
+
+    return dataStr;
+  }
+
+  async removeFromFavourites(valueToRemove) {
+    var dataStr;
+    var dataJson = [];
+
     try {
         dataStr = await AsyncStorage.getItem(FAV_KEY);
 
@@ -55,67 +70,91 @@ class FavouritesScreen extends Component<Props> {
 
     }
 
-    return dataStr;
+    for(var i = 0; i < dataJson.length; i++) {
+      if (dataJson[i].filename === valueToRemove) {
+        // If element in array - remove it
+        dataJson.splice(i,1);
+      }
+    }
+
+    dataStr = JSON.stringify(dataJson);
+
+    try {
+      await AsyncStorage.setItem(FAV_KEY, dataStr);
+    } catch (error) {
+      // Error saving data
+    }
+    try
+    {
+        dataStr2 = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr2 !== null)
+        {
+          dataJson2 = JSON.parse(dataStr2);
+          this.setState({ JsonDataForList: dataJson2 });
+        }
+    }
+     catch(error)
+     {
+
+     }
+
+    //ToastAndroid.show(dataStr, ToastAndroid.SHORT);
+  }
+
+  removeFavouriteWarning = (favouriteToRemove) => {
+    Alert.alert(
+      "Warning",
+      "Are you sure you want to remove '" + favouriteToRemove + "' from your favourites?",
+      [
+        { text: "Cancel",onPress:() => console.log('Cancel Pressed'),
+        style:'cancel'},
+        {text: "OK",onPress:() =>
+          {
+            this.removeFromFavourites(favouriteToRemove);
+          }
+      }
+
+      ], {cancelable:false}
+    );
   }
 
   onPressRecording= () => {
     ToastAndroid.show('Playing Recording', ToastAndroid.SHORT);
   }
-  RemoveItemFromArray=(itemToDelete)=>{
-    for (var i=RecordingArray.length-1; i>=0; i--) {
-      if (RecordingArray[i] === itemToDelete) {
-        RecordingArray.splice(i, 1);
-      }
-    }
-    this.setState({RecordingArray});
-  }
-  removeRecording=(stringToDelete)=>{
-    Alert.alert(
-      "Warning",
-      "Are you sure you want to unfavourite this?",
-      [
-        { text: "Cancel",onPress:() => console.log('Cancel Pressed'),
-        style:'cancel'},
-        {text: "OK",onPress:() => //fileManager.deleteCategory(stringToDelete)}
-        {this.RemoveItemFromArray(stringToDelete)}}
-      ], {cancelable:false}
-    );
-  }
-  _keyExtractor = (item, index) => index.toString();
 
      render() {
        return (
-         <List containerStyle = {{
-           marginTop:0,
-          marginBottom:80,borderTopWidth:0,borderBottomWidth:0}}>
+          <List containerStyle = {{
+            marginTop:0,
+           marginBottom:80,borderTopWidth:0,borderBottomWidth:0}}>
           <FlatList
-            data = {RecordingArray}
+            data = {this.state.JsonDataForList}
             extraData={this.state}
-            keyExtractor={this._keyExtractor}
-            //id={item.id}
-            renderItem={({item}) => {
+            renderItem={({item}) =>{
               return (
-              <ListItem
-                  title = {item}
-                  titleStyle = {styles.recordingText}
-                  onPress={this.onPressRecording}
-                  rightIcon = {
+               <ListItem
+                   title = {item.filename}
+                   titleStyle = {styles.recordingText}
+                   onPress={this.onPressRecording}
+                   keyExtractor={(item, index) => index}
+                   rightIcon = {
                     <Icon
                       raised
                       name="minus"//try changing to ei-trash if trash doesnt work
                       size={40}
                       onPress= {
-                        () =>this.removeRecording(item)
+                        () =>this.removeFavouriteWarning(item.filename)
                       }
                     />
                   }
                   containerStyle = {styles.container}
                   />
-                )
-              }
+              )
             }
+          }
           />
-          </List>
+        </List>
       );
   }
 }
@@ -143,3 +182,4 @@ const styles = StyleSheet.create({
 
   }
 })
+
