@@ -91,7 +91,7 @@ class CategoriesScreen extends Component<Props> {
   deleteCategory = (stringToDelete) => {
     Alert.alert(
       "Warning",
-      "Are you sure you want to delete the category '" + stringToDelete + "' ?",
+      "Are you sure you want to delete the category '" + stringToDelete + "'?",
       [
         { text: "Cancel",onPress:() => console.log('Cancel Pressed'),
         style:'cancel'},
@@ -122,6 +122,7 @@ class CategoriesScreen extends Component<Props> {
               isShowing: true,
              })}
             placeholder="Tap Here To Name A New Category"
+            placeholderTextColor='white'
             autoCapitalize='words'
             style={styles.enterText}
         />
@@ -177,7 +178,9 @@ const styles = StyleSheet.create({
   enterText: {
     flex: 1,
     alignContent:'stretch',
+    color:'white',
     backgroundColor: '#52b2d8',
+    fontSize:15,
     textAlign: 'center',
     fontFamily:'sans-serif-condensed'
   },
@@ -201,4 +204,5 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   }
 })
+
 
