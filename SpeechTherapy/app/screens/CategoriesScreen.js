@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
   enterText: {
     flex: 1,
     alignContent:'stretch',
+    backgroundColor: '#52b2d8',
     textAlign: 'center',
     fontFamily:'sans-serif-condensed'
   },
@@ -200,3 +201,4 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   }
 })
+
