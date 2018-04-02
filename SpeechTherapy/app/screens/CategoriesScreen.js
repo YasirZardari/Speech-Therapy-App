@@ -30,6 +30,7 @@ class CategoriesScreen extends Component<Props> {
     super(props)
     this.state = {
       temp: '',
+      isShowing : false
     };
 
 
@@ -71,10 +72,8 @@ class CategoriesScreen extends Component<Props> {
     }
     //Adding Items To Array.
     CategoryArray.push(this.state.temp.toString());
-
+    this.setState({isShowing:false});
     fileManager.createCategory(this.state.temp);
-
-
     this.setState({CategoryArray});
     this.state.temp = "";
     ToastAndroid.show('New Category Created', ToastAndroid.SHORT);
@@ -92,7 +91,7 @@ class CategoriesScreen extends Component<Props> {
   deleteCategory = (stringToDelete) => {
     Alert.alert(
       "Warning",
-      "Are you sure you want to delete this category?",
+      "Are you sure you want to delete the category '" + stringToDelete + "' ?",
       [
         { text: "Cancel",onPress:() => console.log('Cancel Pressed'),
         style:'cancel'},
@@ -118,23 +117,30 @@ class CategoriesScreen extends Component<Props> {
             underlineColorAndroid='transparent'
             autoCorrect = {false}
             multiLine = {false}
-            onChangeText={TextInputValue => this.setState({temp: TextInputValue })}
+            onChangeText={TextInputValue => this.setState({
+              temp: TextInputValue,
+              isShowing: true,
+             })}
             placeholder="Tap Here To Name A New Category"
             autoCapitalize='words'
             style={styles.enterText}
         />
+
        </View>
-        <View style = {{flex:1}}>
+        {!!this.state.isShowing && <View style = {{flex:2}}>
         <TouchableOpacity
           onPress={this.AddItemsToArray}
           style = {styles.button}>
         <Text style = {styles.buttonText}>
             TAP HERE TO CONFIRM THIS NEW CATEGORY
         </Text>
+
         </TouchableOpacity>
+
        </View>
+     }
     </View>
-      <View style = {{flex:4}}>
+      <View style = {{flex:2}}>
         <FlatList
           style = {{flex:1}}
           data = {CategoryArray}
@@ -169,6 +175,7 @@ const styles = StyleSheet.create({
   flex:1
   },
   enterText: {
+    flex: 1,
     alignContent:'stretch',
     textAlign: 'center',
     fontFamily:'sans-serif-condensed'
