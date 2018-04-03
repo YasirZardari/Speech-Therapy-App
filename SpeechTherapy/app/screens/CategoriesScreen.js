@@ -48,8 +48,8 @@ class CategoriesScreen extends Component<Props> {
 
   }
 
-  onPressCategory = () => {
-    this.props.navigation.navigate('CategoryScreen');
+  onPressCategory = (val) => {
+    this.props.navigation.navigate('CategoryScreen',{ str : val});
   }
 
   alreadyInArray = function (array,str) {
@@ -152,7 +152,7 @@ class CategoriesScreen extends Component<Props> {
             <ListItem
                 title = {item}
                 titleStyle = {styles.categoryText}
-                onPress={this.onPressCategory}
+                onPress={() => {this.onPressCategory(item)}}
                 rightIcon = {
                   <Icon
                     raised

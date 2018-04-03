@@ -13,16 +13,23 @@ import {
     TouchableHighlight,
     ToastAndroid
 } from 'react-native';
-
+const fileManager = NativeModules.FileManager;
 import { List, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
+const Sound = require('react-native-sound');
 
-var RecordingArray = ["Recording 1",
+var RecordingArray = [];
+
+var Category;
+
+/*var RecordingArray = ["Recording 1",
 "Recording 2",
 "Recording 3",
 "Recording 4",
 "Recording 5",
 "Recording 6"];
+*/
+
 
 
 type Props = {};
@@ -30,9 +37,61 @@ class CategoryScreen extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {  }
+  
+    
+    
+    
 
-
+    
     //this.props.navigation.navigate('MainMenu'); // testing
+  }
+  
+  componentWillMount() {
+     RecordingArray = [];
+     Category = this.props.navigation.state.params.str;
+
+     fileManager.getAllMessageFilePathFromCategory(Category)
+    .then(function(returnedCategories){
+      var jsonCat = JSON.parse(returnedCategories);
+      for(var i = 0; i < jsonCat.length; i++) {
+        if(!this.alreadyInArray(RecordingArray,jsonCat[i])) {
+          RecordingArray.push(jsonCat[i]);
+        }
+      }
+      this.setState({RecordingArray});
+
+    }.bind(this));
+	   //ToastAndroid.show(Category, ToastAndroid.SHORT);
+  }
+
+  onPressRecording = (val) => {
+    //ToastAndroid.show("Pressed " + val, ToastAndroid.SHORT);
+    var dir = '/sdcard/MessageBank/' + Category;
+    var whoosh = new Sound(val, dir, (error) => {
+
+      if (error) {
+        ToastAndroid.show("Error", ToastAndroid.SHORT);
+        return;
+      }
+
+      whoosh.play((success) => {
+        if(success) {
+          ToastAndroid.show("Playing", ToastAndroid.SHORT);
+        } else {
+          ToastAndroid.show("Not Playing", ToastAndroid.SHORT);
+        }
+      });
+
+    });
+  }
+
+  alreadyInArray = function (array,str) {
+    for(var i = 0; i < array.length; i++) {
+      if (array[i] === str) {
+        return true;
+      }
+    }
+    return false;
   }
 
   RemoveItemFromArray = (itemToDelete) => {
@@ -83,6 +142,7 @@ class CategoryScreen extends Component<Props> {
           <ListItem
               title = {item}
               titleStyle = {styles.recordingText}
+              onPress={() => {this.onPressRecording(item)}}
               rightIcon = {
                 <Icon
                   name="minus"
