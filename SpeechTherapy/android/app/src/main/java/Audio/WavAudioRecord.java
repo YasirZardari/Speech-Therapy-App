@@ -287,6 +287,6 @@ public class WavAudioRecord extends ReactContextBaseJavaModule {
         header.put("data".getBytes());
         header.putInt((int) totalAudioLen);
 
-        out.write(header.array(), 0, 44);
+        out.write(header.array());
     }
 }
