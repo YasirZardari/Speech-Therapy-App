@@ -66,8 +66,7 @@ export const Root = StackNavigator({
     screen: SaveRecordingScreen,
     navigationOptions: {
       title: 'Save Recording',
-
-    //  headerStyle: { backgroundColor: '#52b2d8' },
+      headerStyle: { backgroundColor: '#52b2d8' },
       headerTitleStyle: { color: '#FFFFFF' },
       headerTintColor: '#FFFFFF',
       fontFamily:'sans-serif-condensed'
@@ -77,7 +76,7 @@ export const Root = StackNavigator({
     screen: TTSScreen,
     navigationOptions: {
       title: 'Text-to-Speech',
-    //  headerStyle: {backgroundColor: '#52b2d8'},
+      headerStyle: {backgroundColor: '#52b2d8'},
       headerTitleStyle: {color: '#FFFFFF' },
       headerTintColor: '#FFFFFF',
       fontFamily:'sans-serif-condensed'
