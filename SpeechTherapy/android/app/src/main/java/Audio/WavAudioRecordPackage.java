@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/*
+*   class written by Bartosik Pawel to register the audio recorder as a react native module
+*/
+
+
 public class WavAudioRecordPackage implements ReactPackage {
 
     @Override

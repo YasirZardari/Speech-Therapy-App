@@ -18,6 +18,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/*
+*   class written by Mel Arthurs and Bartosik Pawel to interface between react native and android API
+*/
+
 
 public class FileManager extends ReactContextBaseJavaModule {
 
@@ -102,15 +106,20 @@ public class FileManager extends ReactContextBaseJavaModule {
         try
         {
             String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename;
+            //check if the file is being created in root category
+
             File file = new File(filepath);
             if(file.exists()) file.delete();
+            //if the file already exists, delete it so it can be overwritten
 
             file.createNewFile();
             FileOutputStream os = new FileOutputStream(file);
+            //open a stream to the file
 
             os.write(content.getBytes());
             os.flush();
             os.close();
+            //write the content
         }
         catch(IOException e)
         {
@@ -128,12 +137,15 @@ public class FileManager extends ReactContextBaseJavaModule {
     public void deleteFile(String category, String filename, Promise promise)
     {
         String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename;
+        //check if the file is in the root category
+
         File file = new File(filepath);
         if(!file.exists()) promise.resolve("File does not exist!");
         else
         {
             file.delete();
             promise.resolve("Success!");
+            //if the file exists, delete it
         }
     }
 
@@ -147,14 +159,18 @@ public class FileManager extends ReactContextBaseJavaModule {
     public void getTextFileContent(String category, String filename, Promise promise)
     {
         String filepath = (category == null)? getRootDir() + File.separator + filename : getRootDir() + File.separator + category + File.separator + filename;
+        //check if the file is in the root category
+
         File file = new File(filepath);
         if(!file.exists()) promise.reject("Error: no such file");
+        //if there is not file, return an error
         else
         {
             try
             {
                 Scanner in = new Scanner(file);
                 promise.resolve(in.nextLine());
+                //read the file content
             }
             catch(FileNotFoundException e)
             {
@@ -169,11 +185,15 @@ public class FileManager extends ReactContextBaseJavaModule {
 
         StringBuilder jsonString = new StringBuilder();
         jsonString.append("[ ");
+        //create a string builder for the json string
 
         File cat = new File(getRootDir() + "/" + category);
+        //get the inspected cateory
+
         if (!cat.exists()) {
             promise.reject("Category doesn't exist");
         }
+        //if the category doesn't exist, throw an error
 
         File[] categoryFiles = cat.listFiles();
         for (File file : categoryFiles) {
@@ -181,13 +201,15 @@ public class FileManager extends ReactContextBaseJavaModule {
                 jsonString.append("\"" + file.getName() + "\",");
             }
         }
+        //scan for matching files and add them to the string builder
 
-        //get rid of the trailing comma
         jsonString.deleteCharAt(jsonString.length() - 1);
+        //get rid of the trailing comma
 
 
         jsonString.append("]");
         promise.resolve(jsonString.toString());
+        //finalise and return the string
     }
 
 
@@ -196,24 +218,29 @@ public class FileManager extends ReactContextBaseJavaModule {
         StringBuilder jsonString = new StringBuilder();
 
          jsonString.append("[ ");
+         //create a string builder for the json string
 
 
          File root = new File(getRootDir());
+         //get the root folder
 
 
          File[] filesInRoot = root.listFiles();
+        //get all files existing in root
+
          for (File file : filesInRoot) {
              if (file.isDirectory()) {
                  jsonString.append("\"" + file.getName() + "\",");
              }
          }
+         //scan the result for categories and append them to the string builder
 
-
-         //get rid of the trailing comma
          jsonString.deleteCharAt(jsonString.length() - 1);
+         //get rid of the trailing comma
 
          jsonString.append("]");
          promise.resolve(jsonString.toString());
+         //finalise and return the string
     }
 
     @ReactMethod
