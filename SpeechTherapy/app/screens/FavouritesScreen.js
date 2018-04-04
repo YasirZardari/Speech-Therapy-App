@@ -166,7 +166,7 @@ class FavouritesScreen extends Component<Props> {
                    rightIcon = {
                     <Icon
                       raised
-                      name="minus"//try changing to ei-trash if trash doesnt work
+                      name="minus"
                       size={40}
                       onPress= {
                         () =>this.removeFavouriteWarning(item.filename)
