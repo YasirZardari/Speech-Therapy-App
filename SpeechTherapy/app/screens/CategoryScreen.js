@@ -16,20 +16,23 @@ import {
 const fileManager = NativeModules.FileManager;
 import { List, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
+import { MenuProvider } from 'react-native-popup-menu';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 const Sound = require('react-native-sound');
-
 var RecordingArray = [];
-
 var Category;
 
-/*var RecordingArray = ["Recording 1",
-"Recording 2",
-"Recording 3",
-"Recording 4",
-"Recording 5",
-"Recording 6"];
-*/
-
+// var RecordingArray = ["Recording 1",
+// "Recording 2",
+// "Recording 3",
+// "Recording 4",
+// "Recording 5",
+// "Recording 6"];
 
 
 type Props = {};
@@ -37,15 +40,11 @@ class CategoryScreen extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {  }
-  
-    
-    
-    
 
-    
+
     //this.props.navigation.navigate('MainMenu'); // testing
   }
-  
+
   componentWillMount() {
      RecordingArray = [];
      Category = this.props.navigation.state.params.str;
@@ -91,7 +90,7 @@ class CategoryScreen extends Component<Props> {
         return true;
       }
     }
-    return false;
+   return false;
   }
 
   RemoveItemFromArray = (itemToDelete) => {
@@ -127,11 +126,6 @@ class CategoryScreen extends Component<Props> {
 
   render(){
     return(
-      <List containerStyle = {{
-        marginTop:0,
-       marginBottom:80,
-       borderTopWidth:0,
-       borderBottomWidth:0}}>
       <FlatList
         data = {RecordingArray}
         extraData={this.state}
@@ -144,20 +138,34 @@ class CategoryScreen extends Component<Props> {
               titleStyle = {styles.recordingText}
               onPress={() => {this.onPressRecording(item)}}
               rightIcon = {
+                <MenuProvider style={styles.container2}>
+                <Menu>
+                <MenuTrigger>
                 <Icon
-                  name="minus"
+                  name="pencil"
                   size={40}
-                  onPress= {() =>this.removeRecording(item)}
                 />
+                </MenuTrigger>
+                <MenuOptions>
+                  <MenuOption onSelect={() => alert(`RenameFunctionGoesHere`)} >
+                    <Text style={{color: 'blue'}}>Rename</Text>
+                  </MenuOption>
+                  <MenuOption onSelect={() => this.removeRecording(item)} >
+                    <Text style={{color: 'red'}}>Delete</Text>
+                  </MenuOption>
+                  <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Filler' />
+                </MenuOptions>
+                </Menu>
+                </MenuProvider>
               }
               containerStyle = {styles.container}
               />
             )
         }}
       />
-      </List>
     )
   }
+
 }
 export default CategoryScreen;
 
@@ -165,6 +173,10 @@ const styles = StyleSheet.create({
   container: {
     borderBottomWidth :1,
     height:80
+  },
+  container2: {
+    flex: 1,
+    paddingTop: 17,
   },
   recordingText: {
     fontSize:23,
