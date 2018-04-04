@@ -18,6 +18,7 @@ import {List, ListItem} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
 
 import CategoryScreen from '../screens/CategoryScreen';
+import { StackNavigator } from 'react-navigation';
 
 var CategoryArray = []; //fileManager.getAllCategories();
 
@@ -49,7 +50,11 @@ class CategoriesScreen extends Component<Props> {
   }
 
   onPressCategory = () => {
-    this.props.navigation.navigate('CategoryScreen');
+
+    this.props.navigation.navigate('CategoryScreen', {
+      catName: 'test',
+    });
+    
   }
 
   alreadyInArray = function (array,str) {
@@ -204,5 +209,4 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   }
 })
-
 

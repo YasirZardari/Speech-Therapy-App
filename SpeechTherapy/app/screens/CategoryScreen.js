@@ -16,42 +16,54 @@ import {
 
 import { List, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
+import { StackNavigator } from 'react-navigation';
 
-var RecordingArray = ["Recording 1",
-"Recording 2",
-"Recording 3",
-"Recording 4",
-"Recording 5",
-"Recording 6"];
+const FileManager = NativeModules.FileManager;
 
 
 type Props = {};
 class CategoryScreen extends Component<Props> {
+  
   constructor(props) {
     super(props);
-    this.state = {  }
 
-
-    //this.props.navigation.navigate('MainMenu'); // testing
+    this.state = {
+      flatListData: null,
+      catName: null
+    };
   }
 
-  RemoveItemFromArray = (itemToDelete) => {
-    for (var i=RecordingArray.length-1; i>=0; i--) {
-      if (RecordingArray[i] === itemToDelete) {
-        RecordingArray.splice(i, 1);
-      }
-    }
-    this.setState({RecordingArray});
+  componentWillMount() {
+    const { params } = this.props.navigation.state;
+    const catName = params ? params.catName : null;
+    this.loadData(catName);
   }
 
-  RemoveItemFromArray=(itemToDelete)=>{
-    for (var i=RecordingArray.length-1; i>=0; i--) {
-      if (RecordingArray[i] === itemToDelete) {
-        RecordingArray.splice(i, 1);
-      }
-    }
-    this.setState({RecordingArray});
+  loadData(name) {
+  
+    FileManager.getAllMessageFilePathFromCategory(name)
+    .then(function(messages) {
+
+      this.setState({
+        flatListData: JSON.parse(messages)
+      });
+
+    }.bind(this));
+
+    this.setState({
+        catName: name
+    });
+
   }
+
+  moveMessage(message) {
+    FileManager.moveMessageToRootFromCategory('test', 'rec1.wav')
+    .then(function(messages) {
+
+
+    }.bind(this));
+  }
+
   removeRecording=(stringToDelete)=>{
 
     Alert.alert(
@@ -60,21 +72,33 @@ class CategoryScreen extends Component<Props> {
       [
         {text: "Cancel",onPress:() => console.log('Cancel Pressed'),
         style:'cancel'},
-        {text: "OK",onPress:() => //fileManager.deleteCategory(stringToDelete)}
-        {this.RemoveItemFromArray(stringToDelete)}}
+        {text: "OK",onPress: () => this.moveMessage(stringToDelete),
+        }
       ], {cancelable:false}
     );
   }
 
-  render(){
-    return(
+  render() {
+
+    if (!this.state.flatListData) {
+      return ( 
+      <List containerStyle = {{
+       marginTop:0,
+       marginBottom:80,
+       borderTopWidth:0,
+       borderBottomWidth:0}} >
+      
+      </List> );
+    }
+
+    return (
       <List containerStyle = {{
         marginTop:0,
        marginBottom:80,
        borderTopWidth:0,
        borderBottomWidth:0}}>
       <FlatList
-        data = {RecordingArray}
+        data = {this.state.flatListData}
         extraData={this.state}
         keyExtractor={this._keyExtractor}
         //id={item.id}
@@ -87,7 +111,7 @@ class CategoryScreen extends Component<Props> {
                 <Icon
                   name="minus"
                   size={40}
-                  onPress= {() =>this.removeRecording(item)}
+                  onPress= {() => this.removeRecording(item)}
                 />
               }
               containerStyle = {styles.container}
@@ -96,7 +120,8 @@ class CategoryScreen extends Component<Props> {
         }}
       />
       </List>
-    )
+    );
+
   }
 }
 export default CategoryScreen;

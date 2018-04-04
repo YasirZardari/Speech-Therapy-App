@@ -130,7 +130,7 @@ class SaveRecordingScreen extends Component<Props> {
     if (this.state.saveToFav) {
       this.addToFavourites();
     } else {
-      this.props.navigation.navigate('MainMenu');
+      this.props.navigation.pop();
     }
   }
 
@@ -169,7 +169,7 @@ class SaveRecordingScreen extends Component<Props> {
     }
 
     ToastAndroid.show(dataStr, ToastAndroid.SHORT);
-    this.props.navigation.navigate('MainMenu');
+    this.props.navigation.pop();
   }
 
   onPressRerecord = () => {
