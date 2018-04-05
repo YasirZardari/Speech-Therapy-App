@@ -17,7 +17,13 @@ import {
 const fileManager = NativeModules.FileManager;
 import {List, ListItem} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
-
+import { MenuProvider } from 'react-native-popup-menu';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 const FAV_KEY = "recordingsInFavourites";
 const Sound = require('react-native-sound');
 
@@ -164,14 +170,25 @@ class FavouritesScreen extends Component<Props> {
                    onPress={() => {this.onPressRecording(item.path)}}
                    keyExtractor={(item, index) => index}
                    rightIcon = {
-                    <Icon
-                      raised
-                      name="minus"
-                      size={40}
-                      onPress= {
-                        () =>this.removeFavouriteWarning(item.filename)
-                      }
-                    />
+                    <MenuProvider style={styles.menuStyle}>
+                     <Menu>
+                     <MenuTrigger>
+                     <Icon
+                       name="pencil"
+                       size={40}
+                     />
+                     </MenuTrigger>
+                     <MenuOptions>
+                       <MenuOption onSelect={() => alert(`RenameFunctionGoesHere`)} >
+                         <Text style={{color: 'blue'}}>Rename</Text>
+                       </MenuOption>
+                       <MenuOption onSelect={() => this.removeFavouriteWarning(item)} >
+                         <Text style={{color: 'red'}}>Delete</Text>
+                       </MenuOption>
+                       <MenuOption onSelect={() => alert(`error`)} disabled={true} text='Filler' />
+                     </MenuOptions>
+                     </Menu>
+                     </MenuProvider>
                   }
                   containerStyle = {styles.container}
                   />
@@ -191,6 +208,10 @@ const styles = StyleSheet.create({
   borderBottomWidth :1,
   height:80,
   padding:25
+  },
+    menuStyle: {
+    flex: 1,
+    paddingTop: 17,
   },
   enterText: {
     textAlign: 'center',
