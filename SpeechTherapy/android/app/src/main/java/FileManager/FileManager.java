@@ -26,6 +26,7 @@ import java.util.Scanner;
 public class FileManager extends ReactContextBaseJavaModule {
 
     private static final String ROOT_DIR = "/MessageBank";
+    private static final String UNCAT_DIR = "uncategorised";
     private final String TAG = "FileManager";
     private final String FILE_TYPE_AUDIO = ".wav";
     private final String FILE_TYPE_TEXT = ".txt";
@@ -36,12 +37,20 @@ public class FileManager extends ReactContextBaseJavaModule {
         super(reactContext);
 
         File rootDir = new File(getRootDir());
+        File uncatDir = new File(getRootDir() + File.separator + UNCAT_DIR);
 
         if (!rootDir.exists()) {
             if (rootDir.mkdirs())
                 Log.d(TAG, "Created Root at: " + getRootDir());
             else
                 Log.e(TAG, "Unable to create root");
+        }
+
+        if (!uncatDir.exists()) {
+            if (uncatDir.mkdirs())
+                Log.d(TAG, "Created uncategorised");
+            else
+                Log.e(TAG, "Unable to create uncategorised");
         }
 
     }
@@ -81,8 +90,8 @@ public class FileManager extends ReactContextBaseJavaModule {
         for (File message : messagesInCategory) {
             if (message.getName().endsWith(FILE_TYPE_AUDIO) || message.getName().endsWith(FILE_TYPE_TEXT)) {
                 
-                // Move the message from within the category to the root folder
-                moveMessageToRootFromCategory(categoryName, message.getName(), promise);
+                // Move the message from within the category to the uncategorised folder
+                moveMessageToUncategorised(categoryName, message.getName(), promise);
 
             }
         }
@@ -253,6 +262,11 @@ public class FileManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void moveMessageToCategoryFromRoot(String toCategory, String messageName, Promise promise) {
         moveMessageToCategoryFromCategory(null, toCategory, messageName, promise);
+    }
+
+    @ReactMethod
+    public void moveMessageToUncategorised(String fromCategory, String messageName, Promise promise) {
+        moveMessageToCategoryFromCategory(fromCategory, UNCAT_DIR, messageName, promise);
     }
 
     @ReactMethod

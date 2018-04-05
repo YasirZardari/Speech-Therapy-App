@@ -29,6 +29,7 @@ const FileManager = NativeModules.FileManager;
 const Sound = require('react-native-sound');
 
 
+
 type Props = {};
 class CategoryScreen extends Component<Props> {
   
@@ -49,6 +50,7 @@ class CategoryScreen extends Component<Props> {
     const catName = params ? params.catName : null;
     this.loadData(catName);
   }
+
 
   loadData(name) {
   
@@ -92,14 +94,22 @@ class CategoryScreen extends Component<Props> {
   moveMessage(message) {
     ToastAndroid.show(this.state.catName, ToastAndroid.SHORT);
 
-    FileManager.moveMessageToRootFromCategory(this.state.catName, message)
+    FileManager.moveMessageToUncategorised(this.state.catName, message)
     .then(
       function(messages) {
-        ToastAndroid.show("callback", ToastAndroid.SHORT);
+
+        this.loadData(this.state.catName);
+        this.setState({ 
+          refresh: !this.state.refresh
+        });
+        this.forceUpdate();
+
       }
-    );
+    .bind(this));
+
     
   }
+
 
   removeRecording=(stringToDelete)=>{
 
@@ -132,8 +142,8 @@ class CategoryScreen extends Component<Props> {
 
     return(
       <FlatList
-        data = {this.state.flatListData}
-        extraData={this.state}
+        data = { this.state.flatListData }
+        extraData={this.state.refresh}
         keyExtractor={this._keyExtractor}
         //id={item.id}
         renderItem={({item}) => {
@@ -143,7 +153,7 @@ class CategoryScreen extends Component<Props> {
               titleStyle = {styles.recordingText}
               onPress={() => { this.onPressRecording(item)} }
               rightIcon = {
-                <MenuProvider style={styles.menuStyle}>
+                <MenuProvider style={styles.container2}>
                 <Menu>
                 <MenuTrigger>
                 <Icon
@@ -156,9 +166,9 @@ class CategoryScreen extends Component<Props> {
                     <Text style={{color: 'blue'}}>Rename</Text>
                   </MenuOption>
                   <MenuOption onSelect={() => this.removeRecording(item)} >
-                    <Text style={{color: 'red'}}>Delete</Text>
+                    <Text style={{color: 'red'}}>Remove From Category</Text>
                   </MenuOption>
-                  <MenuOption onSelect={() => alert(`error`)} disabled={true} text='Filler' />
+                  <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Filler' />
                 </MenuOptions>
                 </Menu>
                 </MenuProvider>
@@ -179,7 +189,7 @@ const styles = StyleSheet.create({
     borderBottomWidth :1,
     height:80
   },
-  menuStyle: {
+  container2: {
     flex: 1,
     paddingTop: 17,
   },
