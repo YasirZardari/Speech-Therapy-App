@@ -18,6 +18,7 @@ import {List, ListItem} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
 
 import CategoryScreen from '../screens/CategoryScreen';
+import { StackNavigator } from 'react-navigation';
 
 var CategoryArray = []; //fileManager.getAllCategories();
 
@@ -48,8 +49,13 @@ class CategoriesScreen extends Component<Props> {
 
   }
 
-  onPressCategory = (val) => {
-    this.props.navigation.navigate('CategoryScreen',{ str : val});
+  onPressCategory = (cat) => {
+
+    ToastAndroid.show(cat, ToastAndroid.SHORT);
+    this.props.navigation.navigate('CategoryScreen', {
+      catName: cat,
+    });
+
   }
 
   alreadyInArray = function (array,str) {
@@ -152,7 +158,7 @@ class CategoriesScreen extends Component<Props> {
             <ListItem
                 title = {item}
                 titleStyle = {styles.categoryText}
-                onPress={() => {this.onPressCategory(item)}}
+                onPress={ () => this.onPressCategory(item) }
                 rightIcon = {
                   <Icon
                     raised
@@ -204,5 +210,4 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   }
 })
-
 

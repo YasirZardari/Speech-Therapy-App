@@ -13,9 +13,6 @@ import {
     TouchableHighlight,
     ToastAndroid
 } from 'react-native';
-const fileManager = NativeModules.FileManager;
-import { List, ListItem } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/EvilIcons';
 import { MenuProvider } from 'react-native-popup-menu';
 import {
   Menu,
@@ -23,49 +20,56 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-const Sound = require('react-native-sound');
-var RecordingArray = [];
-var Category;
+import { List, ListItem } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/EvilIcons';
 
-// var RecordingArray = ["Recording 1",
-// "Recording 2",
-// "Recording 3",
-// "Recording 4",
-// "Recording 5",
-// "Recording 6"];
+import { StackNavigator } from 'react-navigation';
+
+const FileManager = NativeModules.FileManager;
+const Sound = require('react-native-sound');
 
 
 type Props = {};
 class CategoryScreen extends Component<Props> {
+  
   constructor(props) {
     super(props);
-    this.state = {  }
 
+    this.state = {
+      flatListData: null,
+      catName: null
+    };
 
-    //this.props.navigation.navigate('MainMenu'); // testing
+    this.onPressRecording = this.onPressRecording.bind(this);
+    this.moveMessage = this.moveMessage.bind(this);
   }
 
   componentWillMount() {
-     RecordingArray = [];
-     Category = this.props.navigation.state.params.str;
+    const { params } = this.props.navigation.state;
+    const catName = params ? params.catName : null;
+    this.loadData(catName);
+  }
 
-     fileManager.getAllMessageFilePathFromCategory(Category)
-    .then(function(returnedCategories){
-      var jsonCat = JSON.parse(returnedCategories);
-      for(var i = 0; i < jsonCat.length; i++) {
-        if(!this.alreadyInArray(RecordingArray,jsonCat[i])) {
-          RecordingArray.push(jsonCat[i]);
-        }
-      }
-      this.setState({RecordingArray});
+  loadData(name) {
+  
+    FileManager.getAllMessageFilePathFromCategory(name)
+    .then(function(messages) {
+
+      this.setState({
+        flatListData: JSON.parse(messages)
+      });
 
     }.bind(this));
-	   //ToastAndroid.show(Category, ToastAndroid.SHORT);
+
+    this.setState({
+        catName: name
+    });
   }
+
 
   onPressRecording = (val) => {
     //ToastAndroid.show("Pressed " + val, ToastAndroid.SHORT);
-    var dir = '/sdcard/MessageBank/' + Category;
+    var dir = '/sdcard/MessageBank/' + this.state.catName;
     var whoosh = new Sound(val, dir, (error) => {
 
       if (error) {
@@ -84,32 +88,19 @@ class CategoryScreen extends Component<Props> {
     });
   }
 
-  alreadyInArray = function (array,str) {
-    for(var i = 0; i < array.length; i++) {
-      if (array[i] === str) {
-        return true;
+
+  moveMessage(message) {
+    ToastAndroid.show(this.state.catName, ToastAndroid.SHORT);
+
+    FileManager.moveMessageToRootFromCategory(this.state.catName, message)
+    .then(
+      function(messages) {
+        ToastAndroid.show("callback", ToastAndroid.SHORT);
       }
-    }
-   return false;
+    );
+    
   }
 
-  RemoveItemFromArray = (itemToDelete) => {
-    for (var i=RecordingArray.length-1; i>=0; i--) {
-      if (RecordingArray[i] === itemToDelete) {
-        RecordingArray.splice(i, 1);
-      }
-    }
-    this.setState({RecordingArray});
-  }
-
-  RemoveItemFromArray=(itemToDelete)=>{
-    for (var i=RecordingArray.length-1; i>=0; i--) {
-      if (RecordingArray[i] === itemToDelete) {
-        RecordingArray.splice(i, 1);
-      }
-    }
-    this.setState({RecordingArray});
-  }
   removeRecording=(stringToDelete)=>{
 
     Alert.alert(
@@ -118,16 +109,30 @@ class CategoryScreen extends Component<Props> {
       [
         {text: "Cancel",onPress:() => console.log('Cancel Pressed'),
         style:'cancel'},
-        {text: "OK",onPress:() => //fileManager.deleteCategory(stringToDelete)}
-        {this.RemoveItemFromArray(stringToDelete)}}
+        {text: "OK",onPress: () => this.moveMessage(stringToDelete),
+        }
       ], {cancelable:false}
     );
   }
 
-  render(){
+
+  render() {
+
+    if (!this.state.flatListData) {
+      return ( 
+      <List containerStyle = {{
+       marginTop:0,
+       marginBottom:80,
+       borderTopWidth:0,
+       borderBottomWidth:0}} >
+      
+      </List> 
+      );
+    }
+
     return(
       <FlatList
-        data = {RecordingArray}
+        data = {this.state.flatListData}
         extraData={this.state}
         keyExtractor={this._keyExtractor}
         //id={item.id}
@@ -136,7 +141,7 @@ class CategoryScreen extends Component<Props> {
           <ListItem
               title = {item}
               titleStyle = {styles.recordingText}
-              onPress={() => {this.onPressRecording(item)}}
+              onPress={() => { this.onPressRecording(item)} }
               rightIcon = {
                 <MenuProvider style={styles.container2}>
                 <Menu>
