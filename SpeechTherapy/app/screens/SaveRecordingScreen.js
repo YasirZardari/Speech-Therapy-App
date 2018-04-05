@@ -21,6 +21,7 @@ const WavAudioRecord = NativeModules.WavAudioRecord;
 const FileManager = NativeModules.FileManager;
 
 const FAV_KEY = "recordingsInFavourites";
+var TEMP_FILENAME = "";
 
 // Separating this out because I'm using this in an "if" statement
 let valNewCategory = '<New Category>';
@@ -36,8 +37,14 @@ class SaveRecordingScreen extends Component<Props> {
   constructor(props) {
     super(props);
 
+    var date = new Date();
+    var nowTime = date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds();
+    var nowDate = date.getDay() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
+
+    TEMP_FILENAME = nowTime + "_" + nowDate;
+
     this.state = {
-      filename: 'speechrec',
+      filename: nowTime + "_" + nowDate,
       category: valUncategorized,
 
       path: '/',
@@ -56,6 +63,10 @@ class SaveRecordingScreen extends Component<Props> {
     }.bind(this));
 
     this.onPressSave = this.onPressSave.bind(this);
+  }
+
+  componentDidMount() {
+    this.saveRecording();
   }
 
   alreadyInArray = function (array,str) {
@@ -104,12 +115,7 @@ class SaveRecordingScreen extends Component<Props> {
     }
   }
 
-  onPressSave = () => {
-    // set filepath, if field empty - give default name "speechrec"
-    if (this.state.filename === '') {
-      this.setState({ filename:'speechrec' });
-    }
-
+  saveRecording = () => {
     WavAudioRecord.setPath(this.state.path + this.state.filename + ".wav");
 
     // If promise is not resolved, recoring still will save.
@@ -125,6 +131,13 @@ class SaveRecordingScreen extends Component<Props> {
     })
     .catch(function(err){
       ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
+    });
+  }
+
+  onPressSave = () => {
+    FileManager.renameMessageInRoot(TEMP_FILENAME, this.state.filename)
+    .then(function(resolve){
+      FileManager.moveMessageToCategoryFromRoot(this.state.category, this.state.filename + ".wav");
     });
 
     if (this.state.saveToFav) {
@@ -177,7 +190,8 @@ class SaveRecordingScreen extends Component<Props> {
   }
 
   onPressReplay = () => {
-    var whoosh = new Sound('Test1.wav', '/sdcard/MessageBank/', (error) => {
+    ToastAndroid.show(TEMP_FILENAME, ToastAndroid.SHORT);
+    var whoosh = new Sound(TEMP_FILENAME + ".wav", '/sdcard/MessageBank/', (error) => {
 
       if (error) {
         ToastAndroid.show("Error", ToastAndroid.SHORT);

@@ -80,7 +80,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         File[] messagesInCategory = cat.listFiles();
         for (File message : messagesInCategory) {
             if (message.getName().endsWith(FILE_TYPE_AUDIO) || message.getName().endsWith(FILE_TYPE_TEXT)) {
-                
+
                 // Move the message from within the category to the root folder
                 moveMessageToRootFromCategory(categoryName, message.getName(), promise);
 
@@ -361,12 +361,16 @@ public class FileManager extends ReactContextBaseJavaModule {
 
 
         File message = new File(curPath);
-        if (!message.exists())
-            promise.reject("File does not exist at: " + curPath);
+        if (!message.exists()) {
+          promise.reject("File does not exist at: " + curPath);
+          return;
+        }
 
         File newMessage = new File(newPath);
-        if (newMessage.exists())
-            promise.reject("File already has this name: " + newPath);
+        if (newMessage.exists()) {
+          promise.reject("File already has this name: " + newPath);
+          return;
+        }
 
         if (!message.renameTo(newMessage))
             Log.e(TAG, "Unable to rename file");
