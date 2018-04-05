@@ -95,6 +95,12 @@ class CategoriesScreen extends Component<Props> {
   }
 
   deleteCategory = (stringToDelete) => {
+
+    if (stringToDelete === fileManager.getUncatDir()) {
+      ToastAndroid.show('Cannot delete this', ToastAndroid.SHORT);
+      return;
+    }
+
     Alert.alert(
       "Warning",
       "Are you sure you want to delete the category '" + stringToDelete + "'?",

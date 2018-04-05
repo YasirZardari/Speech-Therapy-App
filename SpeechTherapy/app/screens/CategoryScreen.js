@@ -92,7 +92,6 @@ class CategoryScreen extends Component<Props> {
 
 
   moveMessage(message) {
-    ToastAndroid.show(this.state.catName, ToastAndroid.SHORT);
 
     FileManager.moveMessageToUncategorised(this.state.catName, message)
     .then(
@@ -106,16 +105,20 @@ class CategoryScreen extends Component<Props> {
 
       }
     .bind(this));
-
-    
+   
   }
 
 
   removeRecording=(stringToDelete)=>{
 
+    if (this.state.catName === 'uncategorised') {
+      ToastAndroid.show('Cannot move this', ToastAndroid.SHORT);
+      return;
+    }
+
     Alert.alert(
       "Warning",
-      "Are you sure you want to remove "+ stringToDelete + " from this category?",
+      "Are you sure you want to remove "+ stringToDelete + " from " + this.state.catName,
       [
         {text: "Cancel",onPress:() => console.log('Cancel Pressed'),
         style:'cancel'},
@@ -125,6 +128,11 @@ class CategoryScreen extends Component<Props> {
     );
   }
 
+  renameRecording = (toRename) => {
+
+    
+
+  }
 
   render() {
 
@@ -143,14 +151,14 @@ class CategoryScreen extends Component<Props> {
     return(
       <FlatList
         data = { this.state.flatListData }
-        extraData={this.state.refresh}
-        keyExtractor={this._keyExtractor}
-        //id={item.id}
+        extraData={ this.state.refresh }
+        keyExtractor={ this._keyExtractor }
+        //id={ item.id }
         renderItem={({item}) => {
           return (
           <ListItem
               title = {item}
-              titleStyle = {styles.recordingText}
+              titleStyle = { styles.recordingText }
               onPress={() => { this.onPressRecording(item)} }
               rightIcon = {
                 <MenuProvider style={styles.container2}>
@@ -166,7 +174,7 @@ class CategoryScreen extends Component<Props> {
                     <Text style={{color: 'blue'}}>Rename</Text>
                   </MenuOption>
                   <MenuOption onSelect={() => this.removeRecording(item)} >
-                    <Text style={{color: 'red'}}>Remove From Category</Text>
+                    <Text style={{color: 'red'}}>Uncategorise File</Text>
                   </MenuOption>
                   <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Filler' />
                 </MenuOptions>

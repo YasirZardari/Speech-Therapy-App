@@ -26,7 +26,7 @@ import java.util.Scanner;
 public class FileManager extends ReactContextBaseJavaModule {
 
     private static final String ROOT_DIR = "/MessageBank";
-    private static final String UNCAT_DIR = "uncategorised";
+    public static final String UNCAT_DIR = "uncategorised";
     private final String TAG = "FileManager";
     private final String FILE_TYPE_AUDIO = ".wav";
     private final String FILE_TYPE_TEXT = ".txt";
@@ -59,6 +59,12 @@ public class FileManager extends ReactContextBaseJavaModule {
     public String getName(){
         return "FileManager";
     }
+
+    @ReactMethod
+    public String getUncatDir(){
+        return UNCAT_DIR;
+    }
+
 
     @ReactMethod
     public static String getRootDir() {
@@ -357,6 +363,11 @@ public class FileManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void renameMessageInRoot(String curMessageName, String newMessageName, Promise promise) {
         renameMessageInCategory(null, curMessageName, newMessageName, promise);
+    }
+
+    @ReactMethod
+    public void renameMessageInUncategorised(String curMessageName, String newMessageName, Promise promise) {
+        renameMessageInCategory(UNCAT_DIR, curMessageName, newMessageName, promise);
     }
 
     @ReactMethod
