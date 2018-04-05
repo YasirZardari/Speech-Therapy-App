@@ -27,6 +27,7 @@ import { StackNavigator } from 'react-navigation';
 
 const FileManager = NativeModules.FileManager;
 const Sound = require('react-native-sound');
+const uncat = 'uncategorised';
 
 
 
@@ -38,7 +39,9 @@ class CategoryScreen extends Component<Props> {
 
     this.state = {
       flatListData: null,
-      catName: null
+      catName: null,
+      moveSelection: null,
+      fileToMove: null
     };
 
     this.onPressRecording = this.onPressRecording.bind(this);
@@ -51,6 +54,16 @@ class CategoryScreen extends Component<Props> {
     this.loadData(catName);
   }
 
+
+  prepareMove(file){
+    FileManager.getAllCategories()
+    .then(function(message) {
+      this.setState({
+        moveSelection: JSON.parse(message),
+        fileToMove: file
+      });
+    }.bind(this));
+  }
 
   loadData(name) {
   
@@ -90,26 +103,33 @@ class CategoryScreen extends Component<Props> {
     });
   }
 
+  finaliseMove(result) {
+    this.loadData(this.state.catName);
+    this.setState({ 
+    refresh: !this.state.refresh,
+    moveSelection: null,
+    fileToMove: null
+    });
+    this.forceUpdate();
+  }
 
-  moveMessage(message) {
+  deleteRecording(file){
+    FileManager.deleteFile(this.state.catName, file);
+  }
 
-    FileManager.moveMessageToUncategorised(this.state.catName, message)
-    .then(
-      function(messages) {
 
-        this.loadData(this.state.catName);
-        this.setState({ 
-          refresh: !this.state.refresh
-        });
-        this.forceUpdate();
-
-      }
-    .bind(this));
+  moveMessage(destination, file) {
+    if(destination === uncat)
+      FileManager.moveMessageToUncategorised(this.state.catName, file)
+      .then(this.finaliseMove(result).bind(this));
+    else
+      FileManager.moveMessageToCategoryFromCategory(this.state.catName, destination, file)
+      .then(this.finaliseMove(result).bind(this));
    
   }
 
 
-  removeRecording=(stringToDelete)=>{
+  uncategoriseRecording=(stringToDelete)=>{
 
     if (this.state.catName === 'uncategorised') {
       ToastAndroid.show('Cannot move this', ToastAndroid.SHORT);
@@ -122,7 +142,7 @@ class CategoryScreen extends Component<Props> {
       [
         {text: "Cancel",onPress:() => console.log('Cancel Pressed'),
         style:'cancel'},
-        {text: "OK",onPress: () => this.moveMessage(stringToDelete),
+        {text: "OK",onPress: () => this.moveMessage(uncat, stringToDelete),
         }
       ], {cancelable:false}
     );
@@ -145,6 +165,26 @@ class CategoryScreen extends Component<Props> {
        borderBottomWidth:0}} >
       
       </List> 
+      );
+    }
+
+    if(this.state.moveSelection){
+      return (
+        <FlatList
+          data = {this.state.moveSelection}
+          extraData={this.state}
+          keyExtractor={this._keyExtractor}
+          renderItem={({item}) =>{
+            return (
+              <ListItem
+                title = {item}
+                titleStyle = {styles.recordingText}
+                onPress={() => {this.moveMessage(item, this.fileToMove)}}
+                containerStyle = {styles.container}
+                />
+            )
+          }}
+          />
       );
     }
 
@@ -173,8 +213,14 @@ class CategoryScreen extends Component<Props> {
                   <MenuOption onSelect={() => alert(`RenameFunctionGoesHere`)} >
                     <Text style={{color: 'blue'}}>Rename</Text>
                   </MenuOption>
-                  <MenuOption onSelect={() => this.removeRecording(item)} >
-                    <Text style={{color: 'red'}}>Uncategorise File</Text>
+                  <MenuOption onSelect={() => this.uncategoriseRecording(item)} >
+                    <Text style={{color: 'blue'}}>Uncategorise File</Text>
+                  </MenuOption>
+                  <MenuOption onSelect={() => this.prepareMove(item)} >
+                    <Text style={{color: 'blue'}}>Move file to a different category</Text>
+                  </MenuOption>
+                  <MenuOption onSelect={() => this.deleteRecording(item)} >
+                    <Text style={{color: 'red'}}>Delete File</Text>
                   </MenuOption>
                   <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Filler' />
                 </MenuOptions>
