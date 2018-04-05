@@ -135,10 +135,18 @@ class SaveRecordingScreen extends Component<Props> {
   }
 
   onPressSave = () => {
-    FileManager.renameMessageInRoot(TEMP_FILENAME, this.state.filename)
-    .then(function(resolve){
-      FileManager.moveMessageToCategoryFromRoot(this.state.category, this.state.filename + ".wav");
-    });
+    if (this.state.filename !== TEMP_FILENAME) {
+      FileManager.renameMessageInRoot(TEMP_FILENAME + ".wav", this.state.filename + ".wav")
+      .then(function(resolve){
+        if (this.state.category !== valUncategorized) {
+            FileManager.moveMessageToCategoryFromRoot(this.state.category, this.state.filename + ".wav");
+        }
+      }.bind(this));
+    } else {
+      if (this.state.category !== valUncategorized) {
+        FileManager.moveMessageToCategoryFromRoot(this.state.category, TEMP_FILENAME + ".wav");
+      }
+    }
 
     if (this.state.saveToFav) {
       this.addToFavourites();
