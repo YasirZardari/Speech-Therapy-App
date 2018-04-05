@@ -212,7 +212,8 @@ render() {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.replayContainerButton}
-            onPress={() => goBack()}>
+            onPress={() => goBack()}
+            >
             <Text style={styles.buttonText}>Re-Record</Text>
           </TouchableOpacity>
         </View>
@@ -221,7 +222,7 @@ render() {
           <TextInput
             style={styles.formText}
             autoCapitalize= 'words'
-            placeholder="Name"
+            placeholder="Tap here to name your recording.."
             onChangeText={(filename) => this.setState({ filename })}
           />
 
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
-    backgroundColor: 'green',
+    backgroundColor: '#F5FCFF',
   },
   replayContainer: {
     flex: 1,
@@ -285,14 +286,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
-    backgroundColor: 'tomato',
+    backgroundColor: 'skyblue',
   },
   buttonContainer: {
     flexDirection: 'row',
     width: 320,
-    paddingTop: 16,
+    paddingTop: 60,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignContent: 'center',
   },
   dropdownContainer: {
     paddingTop: 8,

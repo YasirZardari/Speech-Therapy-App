@@ -55,7 +55,7 @@ class CategoriesScreen extends Component<Props> {
     this.props.navigation.navigate('CategoryScreen', {
       catName: cat,
     });
-    
+
   }
 
   alreadyInArray = function (array,str) {

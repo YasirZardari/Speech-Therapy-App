@@ -19,6 +19,7 @@ import {List, ListItem} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
 
 const FAV_KEY = "recordingsInFavourites";
+const Sound = require('react-native-sound');
 
 type Props = {};
 
@@ -119,8 +120,32 @@ class FavouritesScreen extends Component<Props> {
     );
   }
 
-  onPressRecording= () => {
-    ToastAndroid.show('Playing Recording', ToastAndroid.SHORT);
+  onPressRecording= (val) => {
+    var n = val.lastIndexOf('/');
+    var wavFile = val.substring(n + 1);
+    var categoryDir = val.substring(1,n + 1);
+    var root = '/sdcard/MessageBank/';
+    categoryDir = root + categoryDir;
+    wavFile += '.wav';
+
+    var whoosh = new Sound(wavFile, categoryDir, (error) => {
+
+      if (error) {
+        ToastAndroid.show("Error", ToastAndroid.SHORT);
+        return;
+      }
+
+      whoosh.play((success) => {
+        if(success) {
+          ToastAndroid.show("Playing", ToastAndroid.SHORT);
+        } else {
+          ToastAndroid.show("Not Playing", ToastAndroid.SHORT);
+        }
+      });
+
+    });
+    //ToastAndroid.show(categoryDir, ToastAndroid.SHORT);
+    //ToastAndroid.show(wavFile, ToastAndroid.SHORT);
   }
 
      render() {
@@ -136,12 +161,12 @@ class FavouritesScreen extends Component<Props> {
                <ListItem
                    title = {item.filename}
                    titleStyle = {styles.recordingText}
-                   onPress={this.onPressRecording}
+                   onPress={() => {this.onPressRecording(item.path)}}
                    keyExtractor={(item, index) => index}
                    rightIcon = {
                     <Icon
                       raised
-                      name="minus"//try changing to ei-trash if trash doesnt work
+                      name="minus"
                       size={40}
                       onPress= {
                         () =>this.removeFavouriteWarning(item.filename)
