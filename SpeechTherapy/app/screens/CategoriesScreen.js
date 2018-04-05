@@ -49,10 +49,11 @@ class CategoriesScreen extends Component<Props> {
 
   }
 
-  onPressCategory = () => {
+  onPressCategory = (cat) => {
 
+    ToastAndroid.show(cat, ToastAndroid.SHORT);
     this.props.navigation.navigate('CategoryScreen', {
-      catName: 'test',
+      catName: cat,
     });
     
   }
@@ -157,7 +158,7 @@ class CategoriesScreen extends Component<Props> {
             <ListItem
                 title = {item}
                 titleStyle = {styles.categoryText}
-                onPress={this.onPressCategory}
+                onPress={ () => this.onPressCategory(item) }
                 rightIcon = {
                   <Icon
                     raised

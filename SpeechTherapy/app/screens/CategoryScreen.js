@@ -57,11 +57,15 @@ class CategoryScreen extends Component<Props> {
   }
 
   moveMessage(message) {
-    FileManager.moveMessageToRootFromCategory('test', 'rec1.wav')
-    .then(function(messages) {
+    ToastAndroid.show(this.state.catName, ToastAndroid.SHORT);
 
-
-    }.bind(this));
+    FileManager.moveMessageToRootFromCategory(this.state.catName, message)
+    .then(
+      function(messages) {
+        ToastAndroid.show("callback", ToastAndroid.SHORT);
+      }
+    );
+    
   }
 
   removeRecording=(stringToDelete)=>{

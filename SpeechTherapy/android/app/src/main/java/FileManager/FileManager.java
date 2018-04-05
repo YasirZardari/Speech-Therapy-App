@@ -173,6 +173,7 @@ public class FileManager extends ReactContextBaseJavaModule {
         File cat = new File(getRootDir() + "/" + category);
         if (!cat.exists()) {
             promise.reject("Category doesn't exist");
+            return;
         }
 
         File[] categoryFiles = cat.listFiles();
@@ -188,6 +189,7 @@ public class FileManager extends ReactContextBaseJavaModule {
 
         jsonString.append("]");
         promise.resolve(jsonString.toString());
+        return;
     }
 
 
@@ -230,13 +232,13 @@ public class FileManager extends ReactContextBaseJavaModule {
     public void moveMessageToCategoryFromCategory(String fromCategory, String toCategory,
             String messageName, Promise promise)
     {
-        moveMessage(fromCategory, toCategory, messageName, promise, FILE_TYPE_AUDIO);
+        moveMessage(fromCategory, toCategory, messageName, FILE_TYPE_AUDIO, promise);
         String temp = messageName.replace(FILE_TYPE_AUDIO, FILE_TYPE_TEXT);
-        moveMessage(fromCategory, toCategory, temp, promise, FILE_TYPE_TEXT);
+        //moveMessage(fromCategory, toCategory, temp, FILE_TYPE_TEXT, promise);
     }
     @ReactMethod
     public void moveMessage(String fromCategory, String toCategory,
-            String messageName, Promise promise, String filetype) {
+            String messageName, String filetype, Promise promise) {
 
         String newFilePath;
         String oldFilePath;
@@ -249,7 +251,8 @@ public class FileManager extends ReactContextBaseJavaModule {
             newFilePath = getRootDir() + File.separator + toCategory + File.separator + messageName;
             if (!new File(getRootDir() + File.separator + toCategory).exists())
                 // If category to transfer message to exists...
-                promise.reject("Cannot move message to category that doesn't exist");
+                promise.resolve("Cannot move message to category that doesn't exist");
+                //return;
         }
 
         if (fromCategory == null) {
@@ -259,12 +262,14 @@ public class FileManager extends ReactContextBaseJavaModule {
             oldFilePath = getRootDir() + File.separator + fromCategory + File.separator + messageName;
             if (!new File(getRootDir() + File.separator + fromCategory).exists())
                 // If category to transfer message to exists...
-                promise.reject("Cannot move message from category that doesn't exist");
+                promise.resolve("Cannot move message from category that doesn't exist");
+                //return;
         }
 
         // Checking to see if message actually exists
         if (!new File(oldFilePath).exists()) {
-            promise.reject("Message to move doesn't exist" + oldFilePath);
+            promise.resolve("Message to move doesn't exist" + oldFilePath);
+            //return;
         }
 
         // If there already is a file @ new file path
@@ -292,9 +297,11 @@ public class FileManager extends ReactContextBaseJavaModule {
             out.flush();
             out.close();
         } catch (FileNotFoundException e) {
-            promise.reject("FileNotFoundException");
+            promise.resolve("FileNotFoundException");
+            //return;
         } catch (IOException e) {
-            promise.reject("IOException");
+            promise.resolve("IOException");
+            //return;
         }
 
         // delete the original file
@@ -302,6 +309,7 @@ public class FileManager extends ReactContextBaseJavaModule {
             Log.d(TAG, "Unable to delete file: " + oldFilePath );
 
         promise.resolve("");
+        //return;
     }
 
     @ReactMethod
