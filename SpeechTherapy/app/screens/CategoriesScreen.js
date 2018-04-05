@@ -96,7 +96,7 @@ class CategoriesScreen extends Component<Props> {
 
   deleteCategory = (stringToDelete) => {
 
-    if (stringToDelete === fileManager.getUncatDir()) {
+    if (stringToDelete === 'uncategorised') {
       ToastAndroid.show('Cannot delete this', ToastAndroid.SHORT);
       return;
     }
@@ -216,4 +216,3 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   }
 })
-
