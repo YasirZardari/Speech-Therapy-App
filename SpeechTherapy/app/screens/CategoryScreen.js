@@ -143,7 +143,7 @@ class CategoryScreen extends Component<Props> {
               titleStyle = {styles.recordingText}
               onPress={() => { this.onPressRecording(item)} }
               rightIcon = {
-                <MenuProvider style={styles.container2}>
+                <MenuProvider style={styles.menuStyle}>
                 <Menu>
                 <MenuTrigger>
                 <Icon
@@ -158,7 +158,7 @@ class CategoryScreen extends Component<Props> {
                   <MenuOption onSelect={() => this.removeRecording(item)} >
                     <Text style={{color: 'red'}}>Delete</Text>
                   </MenuOption>
-                  <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Filler' />
+                  <MenuOption onSelect={() => alert(`error`)} disabled={true} text='Filler' />
                 </MenuOptions>
                 </Menu>
                 </MenuProvider>
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     borderBottomWidth :1,
     height:80
   },
-  container2: {
+  menuStyle: {
     flex: 1,
     paddingTop: 17,
   },
