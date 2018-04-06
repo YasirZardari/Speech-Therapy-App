@@ -11,7 +11,8 @@ import {
     NativeModules,
     TouchableOpacity,
     TouchableHighlight,
-    ToastAndroid
+    ToastAndroid,
+    ScrollView
 } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
 import {
@@ -22,6 +23,7 @@ import {
 } from 'react-native-popup-menu';
 import { List, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
+import DialogAndroid from 'react-native-dialogs';
 
 import { StackNavigator } from 'react-navigation';
 
@@ -130,8 +132,58 @@ class CategoryScreen extends Component<Props> {
 
   renameRecording = (toRename) => {
 
-    
+    this.setState({
+      fileToRename: toRename
+    });
 
+    this.showDialog(toRename);
+
+  }
+
+  showDialog = function (toRename) {
+    var dialog = new DialogAndroid();
+    dialog.set({
+      title: 'Rename File',
+      content: 'New file name',
+      positiveText: 'OK',
+      negativeText: 'Cancel',
+      input: {
+        callback: this.dialogInputCallback,
+      }
+    });
+    dialog.show();
+  }
+
+  dialogInputCallback = (input) => {
+
+    if (input !== '') {
+
+      FileManager.renameMessageInCategory(this.state.catName, this.state.fileToRename, input + '.wav')
+      .then(function(messages) {
+        //ToastAndroid.show(messages, ToastAndroid.SHORT);
+      }.bind(this));
+
+      this.loadData(this.state.catName);
+      this.setState({ 
+        refresh: !this.state.refresh
+      });
+      this.forceUpdate();
+
+    }
+
+  }
+
+  deleteRecording = (file) => {
+     FileManager.deleteFile(this.state.catName, file)
+      .then(function(messages) {
+        ToastAndroid.show("Deleted", ToastAndroid.SHORT);
+      }.bind(this));
+
+      this.loadData(this.state.catName);
+      this.setState({ 
+        refresh: !this.state.refresh
+      });
+      this.forceUpdate();
   }
 
   render() {
@@ -170,14 +222,24 @@ class CategoryScreen extends Component<Props> {
                 />
                 </MenuTrigger>
                 <MenuOptions>
-                  <MenuOption onSelect={() => alert(`RenameFunctionGoesHere`)} >
-                    <Text style={{color: 'blue'}}>Rename</Text>
-                  </MenuOption>
-                  <MenuOption onSelect={() => this.removeRecording(item)} >
-                    <Text style={{color: 'red'}}>Uncategorise File</Text>
-                  </MenuOption>
-                  <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Filler' />
+
+                  <ScrollView style={{ maxHeight: 200 }}>
+
+                    <MenuOption value={1} onSelect={() => this.renameRecording(item)} >
+                      <Text style={{color: 'blue'}}>Rename</Text>
+                    </MenuOption>
+
+                    <MenuOption value={2} onSelect={() => this.removeRecording(item)} >
+                      <Text style={{color: 'red'}}>Uncategorise File</Text>
+                    </MenuOption>
+
+                    <MenuOption value={3} onSelect={() => this.deleteRecording(item)} >
+                      <Text style={{color: 'red'}}>Delete</Text>
+                    </MenuOption>
+
+                  </ScrollView>
                 </MenuOptions>
+
                 </Menu>
                 </MenuProvider>
               }
@@ -195,7 +257,7 @@ export default CategoryScreen;
 const styles = StyleSheet.create({
   container: {
     borderBottomWidth :1,
-    height:80
+    height:120
   },
   container2: {
     flex: 1,

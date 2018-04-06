@@ -51,7 +51,6 @@ class CategoriesScreen extends Component<Props> {
 
   onPressCategory = (cat) => {
 
-    ToastAndroid.show(cat, ToastAndroid.SHORT);
     this.props.navigation.navigate('CategoryScreen', {
       catName: cat,
     });
@@ -110,7 +109,13 @@ class CategoriesScreen extends Component<Props> {
 
         {text: "OK",onPress:() =>
           {
-            fileManager.deleteCategory(stringToDelete);
+            
+            fileManager.deleteCategory(stringToDelete)
+            .then(function(messages) {
+              ToastAndroid.show("Deleted", ToastAndroid.SHORT);
+            }.bind(this));
+
+
             this.RemoveItemFromArray(stringToDelete);
           }
       }
