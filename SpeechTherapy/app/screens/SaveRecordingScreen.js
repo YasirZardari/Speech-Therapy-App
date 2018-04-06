@@ -119,13 +119,13 @@ class SaveRecordingScreen extends Component<Props> {
     WavAudioRecord.saveRecording()
     .then(function(resolvedVal){
       // on promise resolve
-      ToastAndroid.show('Recording Saved', ToastAndroid.SHORT);
+      // ToastAndroid.show('Recording Saved', ToastAndroid.SHORT);
     },function(rejectVal){
       // on promise reject
-      ToastAndroid.show('Rec NOT Saved', ToastAndroid.SHORT);
+      // ToastAndroid.show('Rec NOT Saved', ToastAndroid.SHORT);
     })
     .catch(function(err){
-      ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
+      ToastAndroid.show("Error occured", ToastAndroid.SHORT);
     });
   }
 
@@ -184,7 +184,7 @@ class SaveRecordingScreen extends Component<Props> {
       // Error saving data
     }
 
-    ToastAndroid.show(dataStr, ToastAndroid.SHORT);
+    ToastAndroid.show(dataStr, ToastAndroid.LONG);
     this.props.navigation.navigate('MainMenu');
   }
 
@@ -202,11 +202,7 @@ class SaveRecordingScreen extends Component<Props> {
       }
 
       whoosh.play((success) => {
-        if(success) {
-          ToastAndroid.show("Playing", ToastAndroid.SHORT);
-        } else {
-          ToastAndroid.show("Not Playing", ToastAndroid.SHORT);
-        }
+
       });
 
     });
