@@ -9,7 +9,8 @@ import {
   NativeModules,
   ToastAndroid,
   CheckBox,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 
 import DialogAndroid from 'react-native-dialogs';
@@ -107,6 +108,7 @@ class SaveRecordingScreen extends Component<Props> {
     } else {
       this.setState({ category: value });
       this.setState({ path: '/' + value + '/'});
+	  
     }
   }
 
@@ -225,7 +227,15 @@ render() {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.replayContainerButton}
-            onPress={() => goBack()}
+            onPress={() => Alert.alert(
+							 'Current Recording Will Be Lost!',
+							 'Are you sure you want to continue?',
+							  [
+								{text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+								{text: 'Yes', onPress: () => goBack()},
+							  ],
+  { cancelable: false }
+)}
             >
             <Text style={styles.buttonText}>Re-Record</Text>
           </TouchableOpacity>
