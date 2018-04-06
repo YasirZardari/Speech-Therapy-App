@@ -25,10 +25,9 @@ var TEMP_FILENAME = "";
 
 // Separating this out because I'm using this in an "if" statement
 let valNewCategory = '<New Category>';
-let valUncategorized = '<All Files>';
+let valUncategorized = 'uncategorised';
 
 let categories = [
-  { value: valUncategorized, },
   { value: valNewCategory, },
 ];
 
@@ -46,9 +45,7 @@ class SaveRecordingScreen extends Component<Props> {
     this.state = {
       filename: nowTime + "_" + nowDate,
       category: valUncategorized,
-
-      path: '/',
-
+      path: '/' + valUncategorized + "/",
       saveToFav: false,
     }
 
@@ -107,8 +104,6 @@ class SaveRecordingScreen extends Component<Props> {
   onCategoryChosen = (value,index,data) => {
     if (value === valNewCategory) {
       this.onCreateNewCategory();
-    } else if (value === valUncategorized) {
-      this.setState({ category: '', path: '/' });
     } else {
       this.setState({ category: value });
       this.setState({ path: '/' + value + '/'});
@@ -136,15 +131,15 @@ class SaveRecordingScreen extends Component<Props> {
 
   onPressSave = () => {
     if (this.state.filename !== TEMP_FILENAME) {
-      FileManager.renameMessageInRoot(TEMP_FILENAME + ".wav", this.state.filename + ".wav")
+      FileManager.renameMessageInCategory(valUncategorized, TEMP_FILENAME + ".wav", this.state.filename + ".wav")
       .then(function(resolve){
         if (this.state.category !== valUncategorized) {
-            FileManager.moveMessageToCategoryFromRoot(this.state.category, this.state.filename + ".wav");
+            FileManager.moveMessageToCategoryFromCategory(valUncategorized, this.state.category, this.state.filename + ".wav");
         }
       }.bind(this));
     } else {
       if (this.state.category !== valUncategorized) {
-        FileManager.moveMessageToCategoryFromRoot(this.state.category, TEMP_FILENAME + ".wav");
+        FileManager.moveMessageToCategoryFromCategory(valUncategorized, this.state.category, this.state.filename + ".wav");
       }
     }
 
@@ -199,7 +194,7 @@ class SaveRecordingScreen extends Component<Props> {
 
   onPressReplay = () => {
     ToastAndroid.show(TEMP_FILENAME, ToastAndroid.SHORT);
-    var whoosh = new Sound(TEMP_FILENAME + ".wav", '/sdcard/MessageBank/', (error) => {
+    var whoosh = new Sound(TEMP_FILENAME + ".wav", '/sdcard/MessageBank/' + valUncategorized, (error) => {
 
       if (error) {
         ToastAndroid.show("Error", ToastAndroid.SHORT);
