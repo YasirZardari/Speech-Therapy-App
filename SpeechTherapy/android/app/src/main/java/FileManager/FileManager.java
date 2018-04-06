@@ -88,26 +88,29 @@ public class FileManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void deleteCategory(String categoryName, Promise promise) {
 
+         Log.e(TAG, "deleteCategory");
         File cat = new File(getRootDir() + File.separator + categoryName);
-        if (!cat.exists())
-           promise.reject("Category doesn't exist:" + categoryName);
+        if (!cat.exists()) {
+            promise.resolve("Category doesn't exist:" + categoryName);
+            return;
+        }
 
         File[] messagesInCategory = cat.listFiles();
         for (File message : messagesInCategory) {
-            if (message.getName().endsWith(FILE_TYPE_AUDIO) || message.getName().endsWith(FILE_TYPE_TEXT)) {
+            if (message.getName().endsWith(FILE_TYPE_AUDIO)) {
 
                 // Move the message from within the category to the uncategorised folder
-                moveMessageToUncategorised(categoryName, message.getName(), promise);
-
+                moveMessageToCategoryFromCategory(categoryName, UNCAT_DIR, message.getName(), promise);
+                Log.e(TAG, "Moving message");
 
             }
         }
 
         // Deleting the category folder
-        if (!cat.delete())
-            Log.e(TAG, "Unable to delete category folder");
-
+        cat.delete();
+        Log.e(TAG, "delete cat");
         promise.resolve("");
+        return;
     }
 
     @ReactMethod
@@ -281,7 +284,7 @@ public class FileManager extends ReactContextBaseJavaModule {
             String messageName, Promise promise)
     {
         moveMessage(fromCategory, toCategory, messageName, FILE_TYPE_AUDIO, promise);
-        String temp = messageName.replace(FILE_TYPE_AUDIO, FILE_TYPE_TEXT);
+        //String temp = messageName.replace(FILE_TYPE_AUDIO, FILE_TYPE_TEXT);
         //moveMessage(fromCategory, toCategory, temp, FILE_TYPE_TEXT, promise);
     }
     @ReactMethod
@@ -290,6 +293,7 @@ public class FileManager extends ReactContextBaseJavaModule {
 
         String newFilePath;
         String oldFilePath;
+        Log.e(TAG, "moveMessage");
 
         if (toCategory == null) {
             // Category not selected, root used instead
@@ -299,8 +303,9 @@ public class FileManager extends ReactContextBaseJavaModule {
             newFilePath = getRootDir() + File.separator + toCategory + File.separator + messageName;
             if (!new File(getRootDir() + File.separator + toCategory).exists())
                 // If category to transfer message to exists...
-                promise.resolve("Cannot move message to category that doesn't exist");
-                //return;
+                Log.e(TAG, "Cannot move message to category that doesn't exist");
+                //promise.resolve("Cannot move message to category that doesn't exist");
+                return;
         }
 
         if (fromCategory == null) {
@@ -310,14 +315,16 @@ public class FileManager extends ReactContextBaseJavaModule {
             oldFilePath = getRootDir() + File.separator + fromCategory + File.separator + messageName;
             if (!new File(getRootDir() + File.separator + fromCategory).exists())
                 // If category to transfer message to exists...
-                promise.resolve("Cannot move message from category that doesn't exist");
-                //return;
+                Log.e(TAG, "Cannot move message to category that doesn't exist");
+                //promise.resolve("Cannot move message from category that doesn't exist");
+                return;
         }
 
         // Checking to see if message actually exists
         if (!new File(oldFilePath).exists()) {
-            promise.resolve("Message to move doesn't exist" + oldFilePath);
-            //return;
+            Log.e(TAG, "Message to move doesn't exist" + oldFilePath);
+            //promise.resolve("Message to move doesn't exist" + oldFilePath);
+            return;
         }
 
         // If there already is a file @ new file path
@@ -345,11 +352,13 @@ public class FileManager extends ReactContextBaseJavaModule {
             out.flush();
             out.close();
         } catch (FileNotFoundException e) {
-            promise.resolve("FileNotFoundException");
-            //return;
+            Log.e(TAG, "FileNotFoundException");
+            //promise.resolve("FileNotFoundException");
+            return;
         } catch (IOException e) {
-            promise.resolve("IOException");
-            //return;
+            Log.e(TAG, "IOException");
+            //promise.resolve("IOException");
+            return;
         }
 
         // delete the original file
@@ -357,7 +366,7 @@ public class FileManager extends ReactContextBaseJavaModule {
             Log.d(TAG, "Unable to delete file: " + oldFilePath );
 
         promise.resolve("");
-        //return;
+        return;
     }
 
     @ReactMethod
@@ -402,6 +411,7 @@ public class FileManager extends ReactContextBaseJavaModule {
             Log.e(TAG, "Unable to rename file");
 
         promise.resolve("");
+        return;
     }
 
 
