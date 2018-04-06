@@ -41,6 +41,130 @@ class FavouritesScreen extends Component<Props> {
     .then((val) =>{
       //ToastAndroid.show(val, ToastAndroid.SHORT);
     });
+  }
+
+  async getFavourites() {
+    try
+    {
+        dataStr = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr !== null)
+        {
+          dataJson = JSON.parse(dataStr);
+          this.setState({ JsonDataForList: dataJson });
+        }
+    }
+     catch(error)
+     {
+
+     }
+
+    return dataStr;
+  }
+
+
+
+  async tryRenameInFavourites(valueToRename, newName) {
+    var dataStr;
+    var dataJson = [];
+    var objectToModify;
+    var objectPosition = 0;
+
+    try {
+        dataStr = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr !== null) {
+          dataJson = JSON.parse(dataStr);
+        }
+    } catch(error) {
+
+    }
+
+    for(var i = 0; i < dataJson.length; i++) {
+      if (dataJson[i].filename === valueToRename) {
+        objectToModify = dataJson[i];
+        objectPosition = i;
+      }
+    }
+
+    // Create new object to put into storage
+    var newPath = objectToModify.path.substring( 0, objectToModify.path.indexOf( valueToRename ) ) + newName;
+    objectToModify.filename = newName;
+    objectToModify.path = newPath;
+    dataJson[objectPosition] = objectToModify;
+
+    dataStr = JSON.stringify(dataJson);
+
+    try {
+      await AsyncStorage.setItem(FAV_KEY, dataStr);
+    } catch (error) {
+      // Error saving data
+    }
+    try
+    {
+        dataStr2 = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr2 !== null)
+        {
+          dataJson2 = JSON.parse(dataStr2);
+          this.setState({ JsonDataForList: dataJson2 });
+        }
+    }
+     catch(error)
+     {
+
+     }
+  }
+
+  async tryChangeCategoryInFavourites(filename, newCategory) {
+    var dataStr;
+    var dataJson = [];
+    var objectToModify;
+    var objectPosition = 0;
+
+    try {
+        dataStr = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr !== null) {
+          dataJson = JSON.parse(dataStr);
+        }
+    } catch(error) {
+
+    }
+
+    for(var i = 0; i < dataJson.length; i++) {
+      if (dataJson[i].filename === valueToRename) {
+        objectToModify = dataJson[i];
+        objectPosition = i;
+      }
+    }
+
+    // Create new object to put into storage
+    var newPath = "/" + newCategory + "/" + filename;
+    objectToModify.path = newPath;
+    dataJson[objectPosition] = objectToModify;
+
+    dataStr = JSON.stringify(dataJson);
+
+    try {
+      await AsyncStorage.setItem(FAV_KEY, dataStr);
+    } catch (error) {
+      // Error saving data
+    }
+    try
+    {
+        dataStr2 = await AsyncStorage.getItem(FAV_KEY);
+
+        if (dataStr2 !== null)
+        {
+          dataJson2 = JSON.parse(dataStr2);
+          this.setState({ JsonDataForList: dataJson2 });
+        }
+    }
+     catch(error)
+     {
+
+     }
 
   }
 
@@ -228,4 +352,3 @@ const styles = StyleSheet.create({
 
   }
 })
-
